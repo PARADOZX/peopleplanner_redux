@@ -72,7 +72,7 @@ class Calendar {
 		$this->day_num = 1;
 
 		 //Here we start building the table heads 
-		echo "<table border=1 width=294>";
+		echo "<table border=1>";
 
 		echo "<tr><th colspan=7><span id='previousMonth' data-preMonth='" . $this->previousMonth . "' data-preYear='" . (($this->previousYear) ? $this->year - 1 : $this->year) . "' style='font-size:6pt; float: left' class='scrollNextMonth'>Previous Month</span> $this->title $this->year <span id='nextMonth' data-nextMonth='" . $this->nextMonth . "' data-nextYear='" . (($this->nextYear) ? $this->year + 1 : $this->year) . "' style='font-size:6pt; float: right' class='scrollNextMonth'>Next Month</span></th></tr>";
 
@@ -145,14 +145,14 @@ class Calendar {
 		}
 
 		if ($exists) {
-			echo "<td> $day_num";
+			echo "<td class='calendarDayBox'> $day_num";
 			foreach ($users as $key) {
 				echo $key;
 			}
 			echo "</td>";
 			// echo $userdate['firstName'] . ' is available on ' . $day_num . "<br />";
 		} else {
-			echo "<td> $day_num </td>";
+			echo "<td class='calendarDayBox'> $day_num </td>";
 		}
 	}
 }

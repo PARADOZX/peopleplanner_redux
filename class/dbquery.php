@@ -13,19 +13,21 @@ class dbquery{
 		//define month for first load since not an AJAX call; otherwise month is determined by $_GET seen below
 		$date = time();
 		$month = date('m', $date);
+		$year = date('Y', $date);
 
 		//validate GET month var from AJAX call
 		$this->month = (isset($_GET['month']) && filter_var($_GET['month'], FILTER_VALIDATE_INT, array("options"=>
 		array("min_range"=>1, "max_range"=>12)))) ? $_GET['month'] : $month;
 
+		$this->year = (isset($_GET['year']) && filter_var($_GET['month'], FILTER_VALIDATE_INT)) ? $_GET['year'] : $year;
 
 	}
 
 	public function getDate(){
 		// $q = "SELECT EXTRACT(DAY FROM date) as date, EXTRACT(MONTH FROM date) as month FROM date WHERE dateID = ?";
-		$q = "SELECT u.firstName, EXTRACT(DAY FROM d.date) as date FROM user as u INNER JOIN dateuser as du ON u.userID = du.userID INNER JOIN date as d ON d.dateID = du.dateID WHERE EXTRACT(MONTH FROM d.date) = ?";
+		$q = "SELECT u.firstName, EXTRACT(DAY FROM d.date) as date FROM user as u INNER JOIN dateuser as du ON u.userID = du.userID INNER JOIN date as d ON d.dateID = du.dateID WHERE EXTRACT(YEAR FROM d.date) = ? AND EXTRACT(MONTH FROM d.date) = ?";
 		$stmt = $this->DB->prepare($q);
-		$stmt->execute(array($this->month));
+		$stmt->execute(array($this->year, $this->month));
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		$array = array();
 		// $array['info'] = '';

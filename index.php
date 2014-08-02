@@ -3,6 +3,21 @@
 <head>
 	<meta charset="utf-8" />
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<style>
+	.calendarDayBox:hover {
+		background-color: yellow;
+		cursor: pointer;
+	}
+	table {
+		margin : 0 auto;
+		 width : 75%;
+		 height : auto
+	}
+	table td {
+		width : 14.2%;
+		height : 25px;
+	}
+	</style>
 </head>
 
 <body>
