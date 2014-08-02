@@ -1,5 +1,8 @@
  <?php 
 
+
+
+
 class Calendar {
 	//sets the first day of the month to 1 
     protected $days_in_month = 0;
@@ -7,16 +10,10 @@ class Calendar {
     protected $month;
     protected $year;
     protected $title;
-    protected $nextYear;
-    protected $previousYear;
-    protected $nextMonth;
-    protected $previousMonth;
 
 	function __construct(){
-		$this->month = (isset($_GET['month']) && filter_var($_GET['month'], FILTER_VALIDATE_INT, array("options"=>
-		array("min_range"=>1, "max_range"=>12)))) ? $_GET['month'] : '';
-
-		$this->year = (isset($_GET['year']) && filter_var($_GET['month'], FILTER_VALIDATE_INT)) ? $_GET['year'] : '';
+		$this->month = (isset($_GET['month'])) ? $_GET['month'] : '';
+		$this->year = (isset($_GET['year'])) ? $_GET['year'] : '';
 	}
 
 	public function create(){
@@ -55,17 +52,27 @@ class Calendar {
 	}
 
 	public function render(){
-		
-		$this->monthYearCounter();
-
 		//This counts the days in the week, up to 7
 		$day_count = 1;
 		$day_num = 1;
+ 
+		$previousYear = false;
+		$nextYear = false;
+		$previousMonth = $this->month - 1;
+		$nextMonth = $this->month + 1;
+		if ($previousMonth < 1) {
+			$previousMonth = 12;
+			$previousYear = true;
+		}
+		if ($nextMonth > 12) {
+			$nextMonth = 1;
+			$nextYear = true;
+		}
 
 		 //Here we start building the table heads 
 		echo "<table border=1 width=294>";
 
-		echo "<tr><th colspan=7><a href='index.php?month=" . $this->previousMonth . "&year=" . (($this->previousYear) ? $this->year - 1 : $this->year) . "' style='font-size:6pt; float: left' class='scrollNextMonth'>Previous Month</a> $this->title $this->year <a href='index.php?month=" . $this->nextMonth . "&year=" . (($this->nextYear) ? $this->year + 1 : $this->year) . "' style='font-size:6pt; float: right' class='scrollNextMonth'>Next Month</a></th></tr>";
+		echo "<tr><th colspan=7><a href='index.php?month=" . $previousMonth . "&year=" . (($previousYear) ? $this->year - 1 : $this->year) . "' style='font-size:6pt; float: left' class='scrollNextMonth'>Previous Month</a> $this->title $this->year <a href='index.php?month=" . $nextMonth . "&year=" . (($nextYear) ? $this->year + 1 : $this->year) . "' style='font-size:6pt; float: right' class='scrollNextMonth'>Next Month</a></th></tr>";
 
 		echo "<tr><td width=42>S</td><td width=42>M</td><td 
 			width=42>T</td><td width=42>W</td><td width=42>T</td><td 
@@ -105,20 +112,10 @@ class Calendar {
 	}
 
 	private function monthYearCounter(){
-		$this->previousYear = false;
-		$this->nextYear = false;
-
-		$this->previousMonth = $this->month - 1;
-		$this->nextMonth = $this->month + 1;
-		if ($this->previousMonth < 1) {
-			$this->previousMonth = 12;
-			$this->previousYear = true;
-		}
-		if ($this->nextMonth > 12) {
-			$this->nextMonth = 1;
-			$this->nextYear = true;
-		}
+		
 	}
 }
 
-?>
+
+
+ ?>

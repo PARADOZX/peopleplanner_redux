@@ -1,4 +1,7 @@
  <?php 
+error_reporting('ALL');
+date_default_timezone_set('America/New_York');
+
 
 class Calendar {
 	//sets the first day of the month to 1 
@@ -65,7 +68,7 @@ class Calendar {
 		 //Here we start building the table heads 
 		echo "<table border=1 width=294>";
 
-		echo "<tr><th colspan=7><a href='index.php?month=" . $this->previousMonth . "&year=" . (($this->previousYear) ? $this->year - 1 : $this->year) . "' style='font-size:6pt; float: left' class='scrollNextMonth'>Previous Month</a> $this->title $this->year <a href='index.php?month=" . $this->nextMonth . "&year=" . (($this->nextYear) ? $this->year + 1 : $this->year) . "' style='font-size:6pt; float: right' class='scrollNextMonth'>Next Month</a></th></tr>";
+		echo "<tr><th colspan=7><span id='previousMonth' data-preMonth='" . $this->previousMonth . "' data-preYear='" . (($this->previousYear) ? $this->year - 1 : $this->year) . "' style='font-size:6pt; float: left' class='scrollNextMonth'>Previous Month</span> $this->title $this->year <span id='nextMonth' data-nextMonth='" . $this->nextMonth . "' data-nextYear='" . (($this->nextYear) ? $this->year + 1 : $this->year) . "' style='font-size:6pt; float: right' class='scrollNextMonth'>Next Month</span></th></tr>";
 
 		echo "<tr><td width=42>S</td><td width=42>M</td><td 
 			width=42>T</td><td width=42>W</td><td width=42>T</td><td 
@@ -120,5 +123,10 @@ class Calendar {
 		}
 	}
 }
+
+$calender = new Calendar();
+
+$calender->create();
+$calender->render();
 
 ?>
