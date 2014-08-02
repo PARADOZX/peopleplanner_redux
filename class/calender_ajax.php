@@ -133,7 +133,6 @@ class Calendar {
 
 	//checks if $day_num exists in $DBdata, if data exists then display.
 	private function parse($day_num, $DBdata){
-		print_r($DBdata['info']);
 		$exists = false;
 		$users = array();
 		if (in_array($day_num, $DBdata['uniqueDates'])) {

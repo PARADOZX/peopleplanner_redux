@@ -9,9 +9,16 @@ class dbquery{
 	function __construct(PDO $connect){
 		//pass in DB connection
 		if ($this->DB == '') $this->DB = $connect;
+
+		//define month for first load since not an AJAX call; otherwise month is determined by $_GET seen below
+		$date = time();
+		$month = date('m', $date);
+
 		//validate GET month var from AJAX call
 		$this->month = (isset($_GET['month']) && filter_var($_GET['month'], FILTER_VALIDATE_INT, array("options"=>
-		array("min_range"=>1, "max_range"=>12)))) ? $_GET['month'] : '';
+		array("min_range"=>1, "max_range"=>12)))) ? $_GET['month'] : $month;
+
+
 	}
 
 	public function getDate(){
