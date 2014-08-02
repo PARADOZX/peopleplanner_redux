@@ -17,19 +17,24 @@ class dbquery{
 		$stmt->execute(array($this->dummyVar));
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		$array = array();
+		// $array['info'] = '';
+		$array['uniqueDates'] = array();
 		while ($result = $stmt->fetch()){
 			$returnArray = array();
 			$returnArray['firstName'] = $result['firstName'];
 			$returnArray['date'] = $result['date'];
-			$array[] = $returnArray;
+			$array['info'][] = $returnArray;
+			//pushes date if unique to array
+			if (!in_array($result['date'], $array['uniqueDates'])) $array['uniqueDates'][] = $result['date'];
 		}
+		// return json_encode($array);
 		return $array;
 	}
 }
 
-$dbconnection = new dbconnect();
-$dbquery = new dbquery($dbconnection->connect());
-echo json_encode($dbquery->getDate());
-
-
+//DEBUGGER
+// $dbconnect = new dbconnect();
+// $dbquery = new dbquery($dbconnect->connect());
+// $array = json_encode($dbquery->getDate());
+// print_r($array);
 ?>

@@ -2,6 +2,7 @@
 error_reporting('ALL');
 date_default_timezone_set('America/New_York');
 
+include 'dbquery.php';
 
 class Calendar {
 	//sets the first day of the month to 1 
@@ -14,15 +15,20 @@ class Calendar {
     protected $previousYear;
     protected $nextMonth;
     protected $previousMonth;
+    protected $day_num;
+    protected $DBdata;
 
-	function __construct(){
+	function __construct($DBdata=''){
 		$this->month = (isset($_GET['month']) && filter_var($_GET['month'], FILTER_VALIDATE_INT, array("options"=>
 		array("min_range"=>1, "max_range"=>12)))) ? $_GET['month'] : '';
 
 		$this->year = (isset($_GET['year']) && filter_var($_GET['month'], FILTER_VALIDATE_INT)) ? $_GET['year'] : '';
+
+		$this->DBdata = $DBdata;
 	}
 
 	public function create(){
+		
 		//get's today's date
 		$date =time();
 		//This puts the day, month, and year in seperate variables
@@ -63,7 +69,7 @@ class Calendar {
 
 		//This counts the days in the week, up to 7
 		$day_count = 1;
-		$day_num = 1;
+		$this->day_num = 1;
 
 		 //Here we start building the table heads 
 		echo "<table border=1 width=294>";
@@ -84,10 +90,12 @@ class Calendar {
 			$day_count++;
 		} 
 
-        //count up the days, untill we've done all of them in the month
-		while ( $day_num <= $this->days_in_month ){ 
-			echo "<td> $day_num </td>"; 
-			$day_num++; 	
+        //count up the days, until we've done all of them in the month
+		while ( $this->day_num <= $this->days_in_month ){
+
+			$this->parse($this->day_num, $this->DBdata);
+			// echo "<td> $this->day_num </td>"; 
+			$this->day_num++; 	
 			$day_count++;
 
 		 //Make sure we start a new row every week
@@ -122,10 +130,39 @@ class Calendar {
 			$this->nextYear = true;
 		}
 	}
+
+	//checks if $day_num exists in $DBdata, if data exists then display.
+	private function parse($day_num, $DBdata){
+		$exists = false;
+		$users = array();
+		if (in_array($day_num, $DBdata['uniqueDates'])) {
+			foreach ($DBdata['info'] as $key => $userdate){
+				if($userdate['date'] == $day_num){
+					$users[] = $userdate['firstName'];
+				}
+			}
+			$exists = true;	
+		}
+
+		if ($exists) {
+			echo "<td> $day_num";
+			foreach ($users as $key) {
+				echo $key;
+			}
+			echo "</td>";
+			// echo $userdate['firstName'] . ' is available on ' . $day_num . "<br />";
+		} else {
+			echo "<td> $day_num </td>";
+		}
+	}
 }
 
-$calender = new Calendar();
+$dbconnection = new dbconnect();
+$dbquery = new dbquery($dbconnection->connect());
+// echo $dbquery->getDate();
 
+
+$calender = new Calendar($dbquery->getDate());
 $calender->create();
 $calender->render();
 
