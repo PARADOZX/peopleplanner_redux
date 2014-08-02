@@ -72,13 +72,13 @@ class Calendar {
 		$this->day_num = 1;
 
 		 //Here we start building the table heads 
-		echo "<table border=1>";
+		echo "<table>";
 
-		echo "<tr><th colspan=7><span id='previousMonth' data-preMonth='" . $this->previousMonth . "' data-preYear='" . (($this->previousYear) ? $this->year - 1 : $this->year) . "' style='font-size:6pt; float: left' class='scrollNextMonth'>Previous Month</span> $this->title $this->year <span id='nextMonth' data-nextMonth='" . $this->nextMonth . "' data-nextYear='" . (($this->nextYear) ? $this->year + 1 : $this->year) . "' style='font-size:6pt; float: right' class='scrollNextMonth'>Next Month</span></th></tr>";
+		echo "<tr><th colspan=7><span id='previousMonth' data-preMonth='" . $this->previousMonth . "' data-preYear='" . (($this->previousYear) ? $this->year - 1 : $this->year) . "' style='font-size:10pt; float: left' class='scrollNextMonth'>Previous Month</span><span id='calendarTitle'>$this->title $this->year</span><span id='nextMonth' data-nextMonth='" . $this->nextMonth . "' data-nextYear='" . (($this->nextYear) ? $this->year + 1 : $this->year) . "' style='font-size:10pt; float: right' class='scrollNextMonth'>Next Month</span></th></tr>";
 
-		echo "<tr><td width=42>S</td><td width=42>M</td><td 
-			width=42>T</td><td width=42>W</td><td width=42>T</td><td 
-			width=42>F</td><td width=42>S</td></tr>";
+		echo "<tr class='tableDaysHeader'><td width=42>Sunday</td><td width=42>Monday</td><td 
+			width=42>Tuesday</td><td width=42>Wednesday</td><td width=42>Thursday</td><td 
+			width=42>Friday</td><td width=42>Saturday</td></tr>";
 
         echo "<tr>";
 
@@ -145,14 +145,16 @@ class Calendar {
 		}
 
 		if ($exists) {
-			echo "<td class='calendarDayBox'> $day_num";
+			echo "<td class='calendarDayBox'><div class='calendarDayNumContainer'><div class='calendarDayNum'>$day_num";
+			echo "<div class='calendarDayInfo'>";
 			foreach ($users as $key) {
 				echo $key;
 			}
+			echo "</div>";
+			echo "</div></div>";
 			echo "</td>";
-			// echo $userdate['firstName'] . ' is available on ' . $day_num . "<br />";
 		} else {
-			echo "<td class='calendarDayBox'> $day_num </td>";
+			echo "<td class='calendarDayBox'><div class='calendarDayNumContainer'><div class='calendarDayNum'>$day_num</div></div></td>";
 		}
 	}
 }
