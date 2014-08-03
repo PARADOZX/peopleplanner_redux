@@ -46,7 +46,7 @@
 		font-size : 36pt;
 	}
 	.calendarDayBox:hover {
-		background-color: yellow;
+		background-color: gray;
 		cursor: pointer;
 	}
 	.calendarDayInfo {
@@ -115,7 +115,7 @@ function init(){
 				month : nextMonth,
 				year : nextYear
 			},
-			dataType: "html", 	//return datatype
+			dataType: "html", 	
 		};
 
 		$.ajax(ajax1).done(function(data){
@@ -125,7 +125,38 @@ function init(){
 			});
 		});
 	});
+
+	//calendar day box click event
+	$('table').on('click', '.calendarDayBox', function(){
+
+		//cache some of these vars
+		var month = ($('#previousMonth').attr('data-preMonth') != 12) ? parseInt($('#previousMonth').attr('data-preMonth')) + 1: 1;
+		var year = ($('#previousMonth').attr('data-preMonth') != 12) ? parseInt($('#previousMonth').attr('data-preYear')) : parseInt($('#previousMonth').attr('data-preYear')) + 1;
+		
+		var ajax1 = {
+			type: "POST",
+			url : "class/calender_ajax.php",
+			data : {
+				month : month,
+				year : year
+			},
+			dataType: "html", 	
+		};
+
+		$.ajax(ajax1).done(function(data){
+			alert(data);
+			// init();  //don't need this.
+		});
+	});
+
+	//dot click event
+	$('table').on('click', '.dot', function(e){
+		e.stopPropagation();
+		alert('dot');
+	});
+
 };
+//redefines AJAX asynchronous functions since every event within init() is binded to a dynamically generated element.
 init();
 
 </script>
