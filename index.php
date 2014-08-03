@@ -51,6 +51,7 @@
 	}
 	.calendarDayInfo {
 		width : 100px;
+		color: red;
 	}
 	
 	
@@ -67,6 +68,11 @@
 	}
 	.calendarDayNum {
 		margin: 0px auto auto 2px;
+	}
+	.dot {
+		height: 20px;
+		width : 5px;
+		
 	}
 	</style>
 </head>
@@ -91,8 +97,10 @@ function init(){
 		};
 
 		$.ajax(ajax1).done(function(data){
-			document.getElementById('calendar').innerHTML = data;
-			init();
+			$('#calendar').fadeOut(200, function(){
+				$(this).fadeIn(200).html(data);
+				init();
+			});
 		});
 	});
 
@@ -110,8 +118,10 @@ function init(){
 		};
 
 		$.ajax(ajax1).done(function(data){
-			document.getElementById('calendar').innerHTML = data;
-			init();
+			$('#calendar').fadeOut(200, function(){
+				$(this).fadeIn(200).html(data);
+				init();
+			});
 		});
 	});
 };

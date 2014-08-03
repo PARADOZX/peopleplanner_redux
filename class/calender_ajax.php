@@ -154,7 +154,9 @@ class Calendar {
 			echo "</div></div>";
 			echo "</td>";
 		} else {
-			echo "<td class='calendarDayBox'><div class='calendarDayNumContainer'><div class='calendarDayNum'>$day_num</div></div></td>";
+			// echo "<td class='calendarDayBox'><div class='calendarDayNumContainer'><div class='calendarDayNum'>$day_num</div></div></td>";
+			echo "<td class='calendarDayBox'><div class='calendarDayNumContainer'><div class='calendarDayNum'>$day_num<div class='calendarDayInfo'><div title='person' style='background-color:green' class='dot'></div></div></div></div></td>";
+		
 		}
 	}
 }
