@@ -70,9 +70,10 @@
 		margin: 0px auto auto 2px;
 	}
 	.dot {
-		height: 20px;
-		width : 5px;
-		
+		display : inline-block;
+		height: 35px;
+		width : 7px;
+		margin-right: 2px;
 	}
 	</style>
 </head>

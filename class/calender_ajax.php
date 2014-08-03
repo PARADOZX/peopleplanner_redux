@@ -138,7 +138,10 @@ class Calendar {
 		if (in_array($day_num, $DBdata['uniqueDates'])) {
 			foreach ($DBdata['info'] as $key => $userdate){
 				if($userdate['date'] == $day_num){
-					$users[] = $userdate['firstName'];
+					// $users[] = $userdate['firstName'];
+					// $users[$userdate['firstName']]['color'] = $userdate['color'];
+					$users[] = array('name'=>$userdate['firstName'], 'color'=>$userdate['color']);
+
 				}
 			}
 			$exists = true;	
@@ -148,15 +151,13 @@ class Calendar {
 			echo "<td class='calendarDayBox'><div class='calendarDayNumContainer'><div class='calendarDayNum'>$day_num";
 			echo "<div class='calendarDayInfo'>";
 			foreach ($users as $key) {
-				echo $key;
+				echo "<div title='" . $key['name'] . "' style='background-color:" . $key['color'] . "' class='dot'></div>";
 			}
 			echo "</div>";
 			echo "</div></div>";
 			echo "</td>";
 		} else {
-			// echo "<td class='calendarDayBox'><div class='calendarDayNumContainer'><div class='calendarDayNum'>$day_num</div></div></td>";
-			echo "<td class='calendarDayBox'><div class='calendarDayNumContainer'><div class='calendarDayNum'>$day_num<div class='calendarDayInfo'><div title='person' style='background-color:green' class='dot'></div></div></div></div></td>";
-		
+			echo "<td class='calendarDayBox'><div class='calendarDayNumContainer'><div class='calendarDayNum'>$day_num</div></div></td>";
 		}
 	}
 }

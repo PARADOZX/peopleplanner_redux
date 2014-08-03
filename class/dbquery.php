@@ -25,7 +25,7 @@ class dbquery{
 
 	public function getDate(){
 		// $q = "SELECT EXTRACT(DAY FROM date) as date, EXTRACT(MONTH FROM date) as month FROM date WHERE dateID = ?";
-		$q = "SELECT u.firstName, EXTRACT(DAY FROM d.date) as date FROM user as u INNER JOIN dateuser as du ON u.userID = du.userID INNER JOIN date as d ON d.dateID = du.dateID WHERE EXTRACT(YEAR FROM d.date) = ? AND EXTRACT(MONTH FROM d.date) = ?";
+		$q = "SELECT u.firstName, EXTRACT(DAY FROM d.date) as date, u.color FROM user as u INNER JOIN dateuser as du ON u.userID = du.userID INNER JOIN date as d ON d.dateID = du.dateID WHERE EXTRACT(YEAR FROM d.date) = ? AND EXTRACT(MONTH FROM d.date) = ?";
 		$stmt = $this->DB->prepare($q);
 		$stmt->execute(array($this->year, $this->month));
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -36,6 +36,7 @@ class dbquery{
 			$returnArray = array();
 			$returnArray['firstName'] = $result['firstName'];
 			$returnArray['date'] = $result['date'];
+			$returnArray['color'] = $result['color'];
 			$array['info'][] = $returnArray;
 			//pushes date if unique to array
 			if (!in_array($result['date'], $array['uniqueDates'])) $array['uniqueDates'][] = $result['date'];
