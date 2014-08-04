@@ -152,7 +152,8 @@ function init(){
 		$.ajax(ajax1).done(function(data){
 			//if toggle (delete or add) is successful than refresh AJAX.  CREATE A FUNCTION FOR 'GET' AJAX CALL TO
 			//REDUCE REDUNDANT CODE.
-			if (data == true){
+			alert(data);
+			if (data == true) {
 				var ajax1 = {
 					type: "GET",
 					url : "class/calender_ajax.php",

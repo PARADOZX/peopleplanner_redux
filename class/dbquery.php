@@ -68,6 +68,7 @@ class dbquery{
 		$q = "SELECT * FROM user as u INNER JOIN dateuser as du ON u.userID = du.userID INNER JOIN date as d ON d.dateID = du.dateID WHERE d.date = ? AND u.userID = ?";
 
 		try {
+
 			$stmt = $this->DB->prepare($q);
 			$stmt->execute(array($date, $this->userID));
 			$stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -75,13 +76,32 @@ class dbquery{
 			//returns the date-user (many to many) DB ID
 			$dateUserID = $result['dateUserID'];
 
+			//if user is already associated with this selected date.
 			if ($result) {
+
 				$q = 'DELETE FROM dateuser WHERE dateUserID = ?';
 				$stmt= $this->DB->prepare($q);
 				$stmt->execute(array($dateUserID));
 				echo true;
-			} else {
 
+			} else {
+				$q = "SELECT * FROM date WHERE date = ?";
+				$stmt = $this->DB->prepare($q);
+				$stmt->execute(array($date));
+				$result = $stmt->fetch();
+				//if selected date is already created
+				if ($result) {
+					$dateID = $result['dateID'];
+					$q = "INSERT INTO dateuser (userID, dateID) VALUES ($this->userID, $dateID)";
+					$stmt = $this->DB->prepare($q);
+					$stmt->execute();
+					echo true;
+				} else {
+					//create date in DB and add user/date relationship
+					$q = "INSERT INTO date (date) VALUES (?)";
+					$stmt = $this->DB->prepare($q);
+					$stmt->execute(array($date));
+				}
 			}
 
 		} catch (PDOException $e) {
