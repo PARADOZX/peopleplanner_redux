@@ -133,6 +133,7 @@ function init(){
 		//cache some of these vars
 		var month = ($('#previousMonth').attr('data-preMonth') != 12) ? parseInt($('#previousMonth').attr('data-preMonth')) + 1: 1;
 		var year = ($('#previousMonth').attr('data-preMonth') != 12) ? parseInt($('#previousMonth').attr('data-preYear')) : parseInt($('#previousMonth').attr('data-preYear')) + 1;
+		
 		//HARDCODED USER ID -- change later		
 		var userID = 1;
 
@@ -149,7 +150,25 @@ function init(){
 		};
 
 		$.ajax(ajax1).done(function(data){
-			alert(data);
+			//if toggle (delete or add) is successful than refresh AJAX.  CREATE A FUNCTION FOR 'GET' AJAX CALL TO
+			//REDUCE REDUNDANT CODE.
+			if (data == true){
+				var ajax1 = {
+					type: "GET",
+					url : "class/calender_ajax.php",
+					data : {
+						month : month,
+						year : year
+					},
+					dataType: "html", 	
+				};
+				$.ajax(ajax1).done(function(data){
+					$('#calendar').fadeOut(200, function(){
+						$(this).fadeIn(200).html(data);
+						init();
+					});
+				});
+			}
 			// init();  //don't need this.
 		});
 	});

@@ -72,9 +72,14 @@ class dbquery{
 			$stmt->execute(array($date, $this->userID));
 			$stmt->setFetchMode(PDO::FETCH_ASSOC);
 			$result = $stmt->fetch();
+			//returns the date-user (many to many) DB ID
+			$dateUserID = $result['dateUserID'];
 
 			if ($result) {
-				echo 'works';
+				$q = 'DELETE FROM dateuser WHERE dateUserID = ?';
+				$stmt= $this->DB->prepare($q);
+				$stmt->execute(array($dateUserID));
+				echo true;
 			} else {
 
 			}
