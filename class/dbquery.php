@@ -6,6 +6,8 @@ class dbquery{
 	protected $DB = '';
 	protected $month;  
 	protected $year;
+	protected $day;
+	protected $userID;
 
 	function __construct(PDO $connect){
 		//pass in DB connection
@@ -13,7 +15,7 @@ class dbquery{
 
 	}
 
-	public function getDate(){
+	public function getAllDates(){
 		//define month for first load since not an AJAX call; otherwise month is determined by $_GET seen below
 		$date = time();
 		$month = date('m', $date);
@@ -45,14 +47,42 @@ class dbquery{
 		return $array;
 	}
 
-	public function setDate(){
+	public function toggleDate(){
 		if (isset($_POST['month']) && filter_var($_POST['month'], FILTER_VALIDATE_INT, array("options"=>
 		array("min_range"=>1, "max_range"=>12)))) $this->month = $_POST['month'];
 
-		if (isset($_POST['year']) && filter_var($_POST['month'], FILTER_VALIDATE_INT)) $this->year = $_POST['year'];
+		if (isset($_POST['day']) && filter_var($_POST['day'], FILTER_VALIDATE_INT)) $this->day = $_POST['day'];	
 
+		if (isset($_POST['year']) && filter_var($_POST['year'], FILTER_VALIDATE_INT)) $this->year = $_POST['year'];
+
+		if (isset($_POST['userID']) && filter_var($_POST['userID'], FILTER_VALIDATE_INT)) $this->userID = $_POST['userID'];
 		
-		// echo $this->month . $this->year;
+		$date = $_POST['year'] . '-' . $_POST['month'] . '-' . $_POST['day'];
+		$date = trim($date);
+
+		// DEBUGGER
+		// echo $_POST['day'] . ' ' . $_POST['month'] . ' ' . $_POST['year'] . ' ' . $_POST['userID'];
+		// echo $date;
+		// $date = '2014-08-13';
+
+		$q = "SELECT * FROM user as u INNER JOIN dateuser as du ON u.userID = du.userID INNER JOIN date as d ON d.dateID = du.dateID WHERE d.date = ? AND u.userID = ?";
+
+		try {
+			$stmt = $this->DB->prepare($q);
+			$stmt->execute(array($date, $this->userID));
+			$stmt->setFetchMode(PDO::FETCH_ASSOC);
+			$result = $stmt->fetch();
+
+			if ($result) {
+				echo 'works';
+			} else {
+
+			}
+
+		} catch (PDOException $e) {
+			echo 'SERVER CONNECTION ERROR';
+			//echo $e->getMessage();  //DEBUGGER
+		} 
 	}
 }
 

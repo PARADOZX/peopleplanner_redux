@@ -128,17 +128,22 @@ function init(){
 
 	//calendar day box click event
 	$('table').on('click', '.calendarDayBox', function(){
-
+		//get the day
+		var day = parseInt($(this).text());
 		//cache some of these vars
 		var month = ($('#previousMonth').attr('data-preMonth') != 12) ? parseInt($('#previousMonth').attr('data-preMonth')) + 1: 1;
 		var year = ($('#previousMonth').attr('data-preMonth') != 12) ? parseInt($('#previousMonth').attr('data-preYear')) : parseInt($('#previousMonth').attr('data-preYear')) + 1;
-		
+		//HARDCODED USER ID -- change later		
+		var userID = 1;
+
 		var ajax1 = {
 			type: "POST",
 			url : "class/calender_ajax.php",
 			data : {
+				day : day,
 				month : month,
-				year : year
+				year : year,
+				userID : userID
 			},
 			dataType: "html", 	
 		};

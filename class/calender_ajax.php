@@ -10,13 +10,13 @@ $dbconnection = new dbconnect();
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 	$dbquery = new dbquery($dbconnection->connect());
-	$calender = new Calendar($dbquery->getDate());
+	$calender = new Calendar($dbquery->getAllDates());
 	$calender->create();
 	$calender->render();
 
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$dbquery = new dbquery($dbconnection->connect());
-	$dbquery->setDate();
+	$dbquery->toggleDate();
 }
 
 

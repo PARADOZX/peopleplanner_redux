@@ -9,6 +9,7 @@ class dbconnect {
 			return $DB; 
 		} catch (PDOException $e){
 			return $e->getMessage();	
+			exit();
 		}
 	}
 } 
