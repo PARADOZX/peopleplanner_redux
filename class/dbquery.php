@@ -78,7 +78,7 @@ class dbquery{
 
 			//if user is already associated with this selected date.
 			if ($result) {
-
+				//disassociate user from selected date
 				$q = 'DELETE FROM dateuser WHERE dateUserID = ?';
 				$stmt= $this->DB->prepare($q);
 				$stmt->execute(array($dateUserID));
@@ -89,18 +89,27 @@ class dbquery{
 				$stmt = $this->DB->prepare($q);
 				$stmt->execute(array($date));
 				$result = $stmt->fetch();
+
 				//if selected date is already created
 				if ($result) {
+					//associate user to selected date
 					$dateID = $result['dateID'];
 					$q = "INSERT INTO dateuser (userID, dateID) VALUES ($this->userID, $dateID)";
 					$stmt = $this->DB->prepare($q);
 					$stmt->execute();
 					echo true;
 				} else {
-					//create date in DB and add user/date relationship
+					//if selected date has not been created create date
 					$q = "INSERT INTO date (date) VALUES (?)";
 					$stmt = $this->DB->prepare($q);
 					$stmt->execute(array($date));
+					$lastID = $this->DB->lastInsertId();
+					
+					//associate user to selected date
+					$q = "INSERT INTO dateuser (userID, dateID) VALUES ($this->userID, $lastID)";
+					$stmt = $this->DB->prepare($q);
+					$stmt->execute();
+					echo true;
 				}
 			}
 
