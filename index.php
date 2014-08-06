@@ -81,6 +81,9 @@ session_start();
 		width : 7px;
 		margin-right: 0px;
 	}
+	#register {
+		display : none;
+	}
 	</style>
 </head>
 
@@ -91,9 +94,16 @@ session_start();
 	</h3>
 	<div id="sign_log">
 		<?php if (!isset($_SESSION['user'])) echo 'Email : <input id="log_in_email" type="text" /><br />
-		Password : <input id="log_in_pass" type="text" /><br />
-		<a href="#" id="register">Register</a>
+		Password : <input id="log_in_pass" type="password" /><br />
+		<a href="#" onclick="register()">Register</a>
 		<button onclick="logIn()">log in</button>'; ?>
+	</div>
+	<div id="register">
+		<h3>Register</h3>
+		<input id="register_name" type="text" /><br/>
+		<input id="register_email" type="email" /><br/>
+		<input id="register_pass" type="password" /><br/>
+		<input id="register_pass2" type="password" /><br/>
 	</div>
 </div>
 <div id="calendar"></div>
@@ -102,10 +112,27 @@ session_start();
 <script>
 
 function logIn(){
-	
-	var ajax = {
+	var email = document.getElementById('log_in_email').value;
+	var password = document.getElementById('log_in_pass').value;
+	$.ajax({
+		type: "POST",
+		url : "class/calender_ajax.php",
+		data : {email : email, password : password, action : 'password'}
+	})
+	.done(function(data){
+		//if data does not contain the text 'firstName' then no user match or server error
+		if (new RegExp("firstName").test(data)){
+			var data = JSON.parse(data);	
+			loggedIn();
+		} else {
+			alert(data);
+		}
+	});
+}
 
-	}
+function register(){
+	$('#sign_log, #sign_title').empty();
+	$('#register').show();
 }
 
 function loggedIn(){
