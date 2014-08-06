@@ -1,3 +1,9 @@
+<?php
+
+session_start();
+
+?>
+
 <!doctype html>
 <html lang='en'>
 <head>
@@ -73,16 +79,51 @@
 		display : inline-block;
 		height: 35px;
 		width : 7px;
-		margin-right: 2px;
+		margin-right: 0px;
 	}
 	</style>
 </head>
 
 <body>
-<h2>Who's Coming?</h2>
-<div id="calendar"><?php include 'class/calender_ajax.php'; ?></div>
+<div>
+	<h3 id="sign_title">
+		<?php if (!isset($_SESSION['user'])) echo "Sign In"; ?>
+	</h3>
+	<div id="sign_log">
+		<?php if (!isset($_SESSION['user'])) echo 'Email : <input id="log_in_email" type="text" /><br />
+		Password : <input id="log_in_pass" type="text" /><br />
+		<a href="#" id="register">Register</a>
+		<button onclick="logIn()">log in</button>'; ?>
+	</div>
+</div>
+<div id="calendar"></div>
+
 
 <script>
+
+function logIn(){
+	
+	var ajax = {
+
+	}
+}
+
+function loggedIn(){
+	var ajax = {
+		type: "GET",
+		url : "class/calender_ajax.php",
+		data: "html"
+	};
+	$.ajax(ajax).done(function(data){
+		$('#sign_title').empty().text('Sign Out');
+		$('#sign_log').empty().html('<button onclick="logOut()">log out</button>');
+		$('#calendar').append(data).hide().slideDown(750).show();
+
+		init();	
+	});
+}
+
+//sets event handlers
 function init(){
 	$('#previousMonth').on('click', function(){
 		var preMonth = $(this).attr('data-preMonth');
@@ -100,6 +141,7 @@ function init(){
 		$.ajax(ajax1).done(function(data){
 			$('#calendar').fadeOut(200, function(){
 				$(this).fadeIn(200).html(data);
+				//redefines AJAX asynchronous functions since every event within init() is binded to a dynamically generated element.
 				init();
 			});
 		});
@@ -163,13 +205,15 @@ function init(){
 					dataType: "html", 	
 				};
 				$.ajax(ajax1).done(function(data){
-					$('#calendar').fadeOut(200, function(){
-						$(this).fadeIn(200).html(data);
-						init();
-					});
+					// $('#calendar').fadeOut(150, function(){
+					// 	$(this).fadeIn(150).html(data);
+					// });
+					$('#calendar').html(data);
+					init();
 				});
+
 			}
-			// init();  //don't need this.
+
 		});
 	});
 
@@ -180,9 +224,16 @@ function init(){
 	});
 
 };
-//redefines AJAX asynchronous functions since every event within init() is binded to a dynamically generated element.
+
 init();
 
+
+
+//calls loggedIn() -- generates calendar if user visits from new window and still in Session.
+if('<?php if (isset($_SESSION['user'])) echo true; ?>' != ''){
+  loggedIn();
+}
 </script>
+
 </body>
 </html>

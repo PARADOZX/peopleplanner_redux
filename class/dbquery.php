@@ -56,7 +56,7 @@ class dbquery{
 		if (isset($_POST['year']) && filter_var($_POST['year'], FILTER_VALIDATE_INT)) $this->year = $_POST['year'];
 
 		if (isset($_POST['userID']) && filter_var($_POST['userID'], FILTER_VALIDATE_INT)) $this->userID = $_POST['userID'];
-		
+
 		$date = $_POST['year'] . '-' . $_POST['month'] . '-' . $_POST['day'];
 		$date = trim($date);
 
@@ -66,7 +66,6 @@ class dbquery{
 		// $date = '2014-08-13';
 
 		$q = "SELECT * FROM user as u INNER JOIN dateuser as du ON u.userID = du.userID INNER JOIN date as d ON d.dateID = du.dateID WHERE d.date = ? AND u.userID = ?";
-
 		try {
 
 			$stmt = $this->DB->prepare($q);
@@ -104,7 +103,7 @@ class dbquery{
 					$stmt = $this->DB->prepare($q);
 					$stmt->execute(array($date));
 					$lastID = $this->DB->lastInsertId();
-					
+
 					//associate user to selected date
 					$q = "INSERT INTO dateuser (userID, dateID) VALUES ($this->userID, $lastID)";
 					$stmt = $this->DB->prepare($q);
@@ -125,4 +124,6 @@ class dbquery{
 // $dbquery = new dbquery($dbconnect->connect());
 // $array = json_encode($dbquery->getDate());
 // print_r($array);
+
+
 ?>

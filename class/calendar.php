@@ -126,7 +126,8 @@ class Calendar {
 		}
 	}
 
-	//checks if $day_num exists in $DBdata, if data exists then display.
+	//checks if $day_num exists in uniqueDates of DBdata, if data exists then display all users associated with 
+	//the date ($day_num) by a color bar.
 	private function parse($day_num, $DBdata){
 		$exists = false;
 		$users = array();

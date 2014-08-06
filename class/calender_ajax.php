@@ -1,4 +1,7 @@
  <?php 
+
+session_start();
+
 error_reporting('ALL');
 date_default_timezone_set('America/New_York');
 
@@ -19,5 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 	$dbquery->toggleDate();
 }
 
+$_SESSION['user'] = 1;
 
-?>
+
+?> 
