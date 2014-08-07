@@ -14,19 +14,20 @@ include 'user_auth.php';
 $dbconnection = new dbconnect();
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-	$dbquery = new dbquery($dbconnection->connect());
-	$calender = new Calendar($dbquery->getAllDates());
-	$calender->create();
-	$calender->render();
+	//check if GET action var is set to logout.  if so, log out.
+	if (isset($_GET['action']) && ($_GET['action'] === 'logout')){
+		User_Auth::logOut();
+	} else {
+		$dbquery = new dbquery($dbconnection->connect());
+		$calender = new Calendar($dbquery->getAllDates());
+		$calender->create();
+		$calender->render();
+	}
 
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	//checks if action POST var is set.  if so new user is registering
-	if (isset($_POST['action']) && ($_POST['action'] === 'password')){
-		if (isset($_POST['email']) && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) && isset($_POST['password'])) {
-	     $email = $_POST['email'];
-	     $password = $_POST['password'];
-	     User_Auth::check_login($email, $password);
-		}
+	//check if POST action var is set to password.  if so, login 
+	if (isset($_POST['action']) && ($_POST['action'] === 'login')){
+		$user_auth = new User_Auth($_POST['email'], $_POST['password']);
 		
 	} else {
 		$dbquery = new dbquery($dbconnection->connect());

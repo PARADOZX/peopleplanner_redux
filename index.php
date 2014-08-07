@@ -2,6 +2,15 @@
 
 session_start();
 
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 300)) {
+    // last request was more than 5 minutes ago
+    session_unset();     // unset $_SESSION variable for the run-time 
+    session_destroy();   // destroy session data in storage
+    setcookie('PHPSESSID', '', time()-3600, '/', '', 0, 0);
+}
+
+$_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
+
 ?>
 
 <!doctype html>
@@ -106,8 +115,10 @@ session_start();
 		<input id="register_pass2" type="password" /><br/>
 	</div>
 </div>
-<div id="calendar"></div>
-
+<div id="inner">
+	<div id="user_list"></div>
+	<div id="calendar"></div>
+</div>
 
 <script>
 
@@ -117,7 +128,7 @@ function logIn(){
 	$.ajax({
 		type: "POST",
 		url : "class/calender_ajax.php",
-		data : {email : email, password : password, action : 'password'}
+		data : {email : email, password : password, action : 'login'}
 	})
 	.done(function(data){
 		//if data does not contain the text 'firstName' then no user match or server error
@@ -127,6 +138,18 @@ function logIn(){
 		} else {
 			alert(data);
 		}
+	});
+}
+
+function logOut(){
+	$.ajax({
+		type : "GET",
+		url : "class/calender_ajax.php",
+		data : {
+			action : 'logout'
+		}
+	}).done(function(data){
+		$('#calendar').empty().html(data);
 	});
 }
 
