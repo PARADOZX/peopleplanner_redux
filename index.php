@@ -11,7 +11,9 @@ if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 
 
 $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 
+
 ?>
+
 
 <!doctype html>
 <html lang='en'>
@@ -122,6 +124,9 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 
 <script>
 
+//user object holds user ID for events
+var userObj = {};
+
 function logIn(){
 	var email = document.getElementById('log_in_email').value;
 	var password = document.getElementById('log_in_pass').value;
@@ -133,7 +138,8 @@ function logIn(){
 	.done(function(data){
 		//if data does not contain the text 'firstName' then no user match or server error
 		if (new RegExp("firstName").test(data)){
-			var data = JSON.parse(data);	
+			var data = JSON.parse(data);
+			userObj.ID = data.userID;
 			loggedIn();
 		} else {
 			alert(data);
@@ -226,8 +232,13 @@ function init(){
 		var month = ($('#previousMonth').attr('data-preMonth') != 12) ? parseInt($('#previousMonth').attr('data-preMonth')) + 1: 1;
 		var year = ($('#previousMonth').attr('data-preMonth') != 12) ? parseInt($('#previousMonth').attr('data-preYear')) : parseInt($('#previousMonth').attr('data-preYear')) + 1;
 		
-		//HARDCODED USER ID -- change later		
-		var userID = 1;
+		//if SESSION is still set then use SESSION['user'] to define userID (need this b/c userObj.ID is undefined 
+		//if page is refreshed; however the SESSION['user'] will still be defined)
+		var userID = '<?php if (!empty($_SESSION['user'])) echo $_SESSION['user']; ?>';
+		//otherwise use userObj.ID to define userID
+		if (userObj.ID) {
+			var userID = userObj.ID;
+		}
 
 		var ajax1 = {
 			type: "POST",
