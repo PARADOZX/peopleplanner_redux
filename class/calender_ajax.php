@@ -8,20 +8,29 @@ date_default_timezone_set('America/New_York');
 //add class auto_loader
 include 'dbquery.php';
 include 'calendar.php';
-include 'user.php';
 include 'user_auth.php';
+include 'usersquery.php';
 
 $dbconnection = new dbconnect();
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 	//check if GET action var is set to logout.  if so, log out.
 	if (isset($_GET['action']) && ($_GET['action'] === 'logout')){
+
 		User_Auth::logOut();
-	} else {
+
+	} else if (isset($_GET['action']) && ($_GET['action'] === 'userlist')){
+
+		$usersquery = new Usersquery($dbconnection->connect());
+		$usersquery->getUsers();
+
+	} else if (!isset($_GET['action'])){
+		
 		$dbquery = new dbquery($dbconnection->connect());
 		$calender = new Calendar($dbquery->getAllDates());
 		$calender->create();
 		$calender->render();
+
 	}
 
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {

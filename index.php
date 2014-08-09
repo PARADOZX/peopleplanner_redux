@@ -30,6 +30,9 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 	body {
 		/*background: url(images/bg.jpg) top center no-repeat #545454;*/
 	}
+	#inner {
+		min-width : 1100px;
+	}
 	table {
 		font-family: 'Just Another Hand', cursive;
 		font-size: 16pt;
@@ -58,6 +61,9 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 	}
 	table tr td:last-child,	table tr th:last-child {
 	  	border-right: 0;
+	}
+	#calendar {
+
 	}
 	#calendarTitle {
 		font-size : 36pt;
@@ -94,6 +100,12 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 	}
 	#register {
 		display : none;
+	}
+	#user_list {
+		font-family: 'Just Another Hand', cursive;
+		font-size: 20pt;
+		float : left;
+		width : 100px;
 	}
 	</style>
 </head>
@@ -140,7 +152,8 @@ function logIn(){
 		if (new RegExp("firstName").test(data)){
 			var data = JSON.parse(data);
 			userObj.ID = data.userID;
-			loggedIn();
+			loggedIn.calendar();
+			loggedIn.userlist();
 		} else {
 			alert(data);
 		}
@@ -155,7 +168,7 @@ function logOut(){
 			action : 'logout'
 		}
 	}).done(function(data){
-		$('#calendar').empty().html(data);
+		$('#inner').empty().html(data);
 	});
 }
 
@@ -164,20 +177,46 @@ function register(){
 	$('#register').show();
 }
 
-function loggedIn(){
-	var ajax = {
-		type: "GET",
-		url : "class/calender_ajax.php",
-		data: "html"
-	};
-	$.ajax(ajax).done(function(data){
-		$('#sign_title').empty().text('Sign Out');
-		$('#sign_log').empty().html('<button onclick="logOut()">log out</button>');
-		$('#calendar').append(data).hide().slideDown(750).show();
+// function loggedIn(){
+// 	var ajax = {
+// 		type: "GET",
+// 		url : "class/calender_ajax.php",
+// 		data: "html"
+// 	};
+// 	$.ajax(ajax).done(function(data){
+// 		$('#sign_title').empty().text('Sign Out');
+// 		$('#sign_log').empty().html('<button onclick="logOut()">log out</button>');
+// 		$('#calendar').append(data).hide().slideDown(750).show();
 
-		init();	
-	});
-}
+// 		init();	
+// 	});
+// }
+
+var loggedIn = {
+	calendar : function(){
+		var ajax = {
+			type: "GET",
+			url : "class/calender_ajax.php",
+			data: "html"
+		};
+		$.ajax(ajax).done(function(data){
+			$('#sign_title').empty().text('Sign Out');
+			$('#sign_log').empty().html('<button onclick="logOut()">log out</button>');
+			$('#calendar').append(data).hide().slideDown(750).show();
+
+			init();	
+		});
+	},
+	userlist : function(){
+		$.ajax({
+			type: "GET",
+			url : "class/calender_ajax.php",
+			data : {action : "userlist"}
+		}).success(function(data){
+			$('#user_list').append(data);
+		});
+	}
+};
 
 //sets event handlers
 function init(){
@@ -292,7 +331,8 @@ init();
 
 //calls loggedIn() -- generates calendar if user visits from new window and still in Session.
 if('<?php if (isset($_SESSION['user'])) echo true; ?>' != ''){
-  loggedIn();
+  loggedIn.calendar();
+  loggedIn.userlist();
 }
 </script>
 
