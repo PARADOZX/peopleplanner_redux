@@ -20,6 +20,7 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 <head>
 	<meta charset="utf-8" />
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="javascript/tooltip-plugin"></script>
  	<link href='http://fonts.googleapis.com/css?family=Just+Another+Hand' rel='stylesheet' type='text/css'>
 
 	<style>
@@ -72,6 +73,9 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 		background-color: gray;
 		cursor: pointer;
 	}
+	#tooltip {
+		white-space:pre-wrap;
+	}
 	.calendarDayInfo {
 		width : 100px;
 		color: red;
@@ -107,10 +111,26 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 		float : left;
 		width : 100px;
 	}
+
+	#tooltip {
+	    background: #e3e3e3 url(../images/search.png) no-repeat 5px 50%;
+	    border: 1px solid #BFBFBF;
+	    float: left;
+	    font-size: 12px;
+	    max-width: 160px;
+	    padding: 1em 1em 1em 3em;
+	    position: absolute;
+	}
+ 
+	.rounded {
+	    -moz-border-radius: 3px;
+	    -webkit-border-radius: 3px;
+	}
 	</style>
 </head>
 
 <body>
+
 <div>
 	<h3 id="sign_title">
 		<?php if (!isset($_SESSION['user'])) echo "Sign In"; ?>
@@ -309,6 +329,7 @@ function init(){
 					// 	$(this).fadeIn(150).html(data);
 					// });
 					$('#calendar').html(data);
+					if ($('#tooltip')) $('#tooltip').remove();
 					init();
 				});
 
@@ -321,6 +342,11 @@ function init(){
 	$('table').on('click', '.dot', function(e){
 		e.stopPropagation();
 		alert('dot');
+	});
+
+	//bind tooltip-plugin feature to td's
+	$('td').tooltip({
+	        rounded: true
 	});
 
 };

@@ -12,11 +12,10 @@ class dbquery{
 	function __construct(PDO $connect){
 		//pass in DB connection
 		if ($this->DB == '') $this->DB = $connect;
-
 	}
 
 	public function getAllDates(){
-		//define month for first load since not an AJAX call; otherwise month is determined by $_GET seen below
+			//define month for first load since not an AJAX call; otherwise month is determined by $_GET seen below
 		$date = time();
 		$month = date('m', $date);
 		$year = date('Y', $date);
@@ -32,8 +31,8 @@ class dbquery{
 		$stmt->execute(array($this->year, $this->month));
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		$array = array();
-		// $array['info'] = '';
 		$array['uniqueDates'] = array();
+		
 		while ($result = $stmt->fetch()){
 			$returnArray = array();
 			$returnArray['firstName'] = $result['firstName'];
@@ -44,6 +43,7 @@ class dbquery{
 			if (!in_array($result['date'], $array['uniqueDates'])) $array['uniqueDates'][] = $result['date'];
 		}
 		// return json_encode($array);
+
 		return $array;
 	}
 
@@ -116,6 +116,31 @@ class dbquery{
 			echo 'SERVER CONNECTION ERROR';
 			//echo $e->getMessage();  //DEBUGGER
 		} 
+	}
+
+	public function tooltip($date){
+		$result = $this->DB->query('SELECT firstName FROM user');
+		//retrieves number of users registered.  should MOVE THIS QUERY so that it's not queried each time theres a unique date.
+		$tooltipInfo = array();
+		while($num = $result->fetch()){
+			$tooltipInfo['usernames'][] = $num['firstName'];
+		}
+		
+		$q = "SELECT u.firstName, EXTRACT(DAY FROM d.date) as date FROM user as u INNER JOIN dateuser as du ON u.userID = du.userID INNER JOIN date as d ON d.dateID = du.dateID WHERE d.date = '$date'";
+		$stmt = $this->DB->query($q);
+		while ($result = $stmt->fetch()){
+			$tooltipInfo['attending'][] = $result['firstName'];
+		}
+
+		$tooltipInfo['notattending'] = array_diff($tooltipInfo['usernames'], $tooltipInfo['attending']);
+
+		$tooltipInfo['count_coming'] = count($tooltipInfo['usernames']) - count($tooltipInfo['notattending']);
+
+		$tooltipInfo['count_not_coming'] = count($tooltipInfo['notattending']);
+
+		
+		return $tooltipInfo;
+
 	}
 }
 

@@ -1,4 +1,6 @@
  <?php 
+
+
 class Calendar {
 	//sets the first day of the month to 1 
     protected $days_in_month = 0;
@@ -12,6 +14,7 @@ class Calendar {
     protected $previousMonth;
     protected $day_num;
     protected $DBdata;
+    protected $dbquery;
 
 	function __construct($DBdata=''){
 		$this->month = (isset($_GET['month']) && filter_var($_GET['month'], FILTER_VALIDATE_INT, array("options"=>
@@ -20,6 +23,10 @@ class Calendar {
 		$this->year = (isset($_GET['year']) && filter_var($_GET['month'], FILTER_VALIDATE_INT)) ? $_GET['year'] : '';
 
 		$this->DBdata = $DBdata;
+
+		//instantiate new dbquery for tooltip
+		$dbconnection = new dbconnect();
+		$this->dbquery = new dbquery($dbconnection->connect());
 	}
 
 	public function create(){
@@ -54,7 +61,7 @@ class Calendar {
  		}
 
 		 //We then determine how many days are in the current month
-		 $this->days_in_month = cal_days_in_month(0, $this->month, $this->year) ; 
+		 $this->days_in_month = cal_days_in_month(0, $this->month, $this->year); 
 
 	}
 
@@ -140,11 +147,25 @@ class Calendar {
 
 				}
 			}
+
+
 			$exists = true;	
 		}
 
 		if ($exists) {
-			echo "<td class='calendarDayBox'><div class='calendarDayNumContainer'><div class='calendarDayNum'>$day_num";
+			//build date for tooltip query
+			$date = $this->year . '-' . $this->month . '-' . $day_num;
+			$tooltipInfo = $this->dbquery->tooltip($date);
+
+			foreach ($tooltipInfo['attending'] as $key) {
+				$can_make .= $key . "\n";
+			}
+			foreach ($tooltipInfo['notattending'] as $key) {
+				$cannot_make .= $key . "\n";
+			}
+
+			echo "<td class='calendarDayBox' title='" . "{$tooltipInfo['count_coming']} " . "can make it: " . "\n" . "$can_make". "\n" . "{$tooltipInfo['count_not_coming']} cannot make it: " . "\n" . "$cannot_make". "'>";
+			echo "<div class='calendarDayNumContainer'><div class='calendarDayNum'>$day_num";
 			echo "<div class='calendarDayInfo'>";
 			foreach ($users as $key) {
 				echo "<div title='" . $key['name'] . "' style='background-color:" . $key['color'] . "' class='dot'></div>";
