@@ -201,7 +201,7 @@ function logIn(){
 			var data = JSON.parse(data);
 			userObj.ID = data.userID;
 			loggedIn.calendar(); 
-			loggedIn.userlist();
+			// loggedIn.userlist();	  // 1 of 3 commented out
 		} else {
 			alert(data);
 		}
@@ -244,6 +244,7 @@ var loggedIn = {
 			userObj.table = $('#tableName').attr('data-tableName');
 			$('#' + userObj.table).attr('selected', 'selected');
 
+			loggedIn.userlist();
 			init();	
 
 		});
@@ -252,7 +253,7 @@ var loggedIn = {
 		$.ajax({
 			type: "GET",
 			url : "class/calender_ajax.php",
-			data : {action : "userlist"}
+			data : {action : "userlist", table: userObj.table}
 		}).success(function(data){
 			$('#user_list').append(data);
 		});
@@ -378,8 +379,7 @@ function init(){
 		userObj.table = $(this).val();	
 		$('#calendar, #user_list').empty();
 		loggedIn.calendar();
-		loggedIn.userlist();
-		// alert(userObj.table);
+		// loggedIn.userlist();
 	});
 
 
@@ -400,7 +400,7 @@ init();
 if('<?php if (isset($_SESSION['user'])) echo true; ?>' != ''){
   $('#select_div').show();
   loggedIn.calendar();
-  loggedIn.userlist();
+  // loggedIn.userlist();
 }
 </script>
 

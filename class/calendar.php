@@ -80,13 +80,6 @@ class Calendar {
 		echo '</select>
 			</div><div id="tableName" data-tableName="'. $this->DBdata['tripInfo'][0]['tableName'] . '" hidden></div>';
 
-		// echo '<div id="select_div">Select Trip
-		// 		<select id="trip_select">
-		// 		  <option value="dateuser1">1</option>
-		// 		  <option value="dateuser2">2</option>
-		// 		</select>
-		// 	</div><div id="tableName" data-tableName="'. $this->DBdata['tripInfo'][0]['tableName'] . '" hidden></div>';
-
 		 //Here we start building the table heads 
 		echo "<table><caption>{$this->DBdata['tripInfo'][0]['tripName']}</caption>";
 

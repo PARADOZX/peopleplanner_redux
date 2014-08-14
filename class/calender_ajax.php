@@ -21,8 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
 	} else if (isset($_GET['action']) && ($_GET['action'] === 'userlist')){
 
-		$usersquery = new Usersquery($dbconnection->connect());
+		$usersquery = new Usersquery($dbconnection->connect(), $_GET['table']);
 		$usersquery->getUsers();
+
 
 	} else if (!isset($_GET['action']) && !empty($_GET['table'])) {
 		$dbquery = new dbquery($dbconnection->connect(), $_GET['table']);  

@@ -56,8 +56,6 @@ class dbquery{
 
 			$this->table = $this->array['tripInfo'][0]['tableName'];
 
-			// $_SESSION['tableID'] = $this->array['tripInfo'][0]['tableName'];		///// V.2
-
 			try {
 				$q = "SELECT * FROM `tableuser` as tu INNER JOIN tableinfo as ti ON tu.tableID = ti.tableID WHERE userID = {$_SESSION['user']}";
 				$stmt = $this->DB->query($q);
