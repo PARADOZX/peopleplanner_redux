@@ -1,4 +1,4 @@
- <?php 
+<?php 
 
 
 class Calendar {
@@ -16,7 +16,7 @@ class Calendar {
     protected $DBdata;
     protected $dbquery;
 
-	function __construct($DBdata=''){
+	function __construct($DBdata='', $table){
 		$this->month = (isset($_GET['month']) && filter_var($_GET['month'], FILTER_VALIDATE_INT, array("options"=>
 		array("min_range"=>1, "max_range"=>12)))) ? $_GET['month'] : '';
 
@@ -26,7 +26,7 @@ class Calendar {
 
 		//instantiate new dbquery for tooltip
 		$dbconnection = new dbconnect();
-		$this->dbquery = new dbquery($dbconnection->connect());
+		$this->dbquery = new dbquery($dbconnection->connect(), $table);
 	}
 
 	public function create(){
@@ -66,15 +66,21 @@ class Calendar {
 	}
 
 	public function render(){
-		
 		$this->monthYearCounter();
 
 		//This counts the days in the week, up to 7
 		$day_count = 1;
 		$this->day_num = 1;
 
+		echo '<div id="select_div">Select Trip
+				<select id="trip_select">
+				  <option value="dateuser1">1</option>
+				  <option value="dateuser2">2</option>
+				</select>
+			</div><div id="tableName" data-tableName="'. $this->DBdata['tripInfo'][0]['tableName'] . '" hidden></div>';
+
 		 //Here we start building the table heads 
-		echo "<table>";
+		echo "<table><caption>{$this->DBdata['tripInfo'][0]['tripName']}</caption>";
 
 		echo "<tr><th colspan=7><span id='previousMonth' data-preMonth='" . $this->previousMonth . "' data-preYear='" . (($this->previousYear) ? $this->year - 1 : $this->year) . "' style='font-size:10pt; float: left' class='scrollNextMonth'>Previous Month</span><span id='calendarTitle'>$this->title $this->year</span><span id='nextMonth' data-nextMonth='" . $this->nextMonth . "' data-nextYear='" . (($this->nextYear) ? $this->year + 1 : $this->year) . "' style='font-size:10pt; float: right' class='scrollNextMonth'>Next Month</span></th></tr>";
 
@@ -148,13 +154,13 @@ class Calendar {
 				}
 			}
 
-
 			$exists = true;	
 		}
 
 		if ($exists) {
 			//build date for tooltip query
 			$date = $this->year . '-' . $this->month . '-' . $day_num;
+
 			$tooltipInfo = $this->dbquery->tooltip($date);
 
 			foreach ($tooltipInfo['attending'] as $key) {

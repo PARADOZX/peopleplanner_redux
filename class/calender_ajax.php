@@ -24,10 +24,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 		$usersquery = new Usersquery($dbconnection->connect());
 		$usersquery->getUsers();
 
-	} else if (!isset($_GET['action'])){
-		
-		$dbquery = new dbquery($dbconnection->connect());
-		$calender = new Calendar($dbquery->getAllDates());
+	} else if (!isset($_GET['action']) && !empty($_GET['table'])) {
+		$dbquery = new dbquery($dbconnection->connect(), $_GET['table']);  
+		$tableName = $dbquery->getTableInfo();
+		$calender = new Calendar($dbquery->getAllDates(), $tableName); 
+		$calender->create();
+		$calender->render();
+
+	} else if (!isset($_GET['action'])){		
+		$dbquery = new dbquery($dbconnection->connect());  
+		$tableName = $dbquery->getTableInfo();
+		$calender = new Calendar($dbquery->getAllDates(), $tableName); 
 		$calender->create();
 		$calender->render();
 
@@ -39,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 		$user_auth = new User_Auth($_POST['email'], $_POST['password']);
 		
 	} else {
-		$dbquery = new dbquery($dbconnection->connect());
+		$dbquery = new dbquery($dbconnection->connect(), $_POST['table']);
 		$dbquery->toggleDate();
 	}
 }

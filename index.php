@@ -1,3 +1,12 @@
+<!--
+TO DO: 
+
+1. Create the select list dynamically by PHP
+2. Find and fix the bug that automatically changes the calender back to Taiwan when scrolling up/down months for Niagara Falls.
+3. Find and fix the bug that automatically updates/changes the calendar for Niagara falls when toggling dates for Taiwan.
+-->
+
+
 <?php
 
 session_start();
@@ -21,7 +30,7 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 	<meta charset="utf-8" />
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="javascript/tooltip-plugin"></script>
- 	<link href='http://fonts.googleapis.com/css?family=Just+Another+Hand' rel='stylesheet' type='text/css'>
+ 	<link href='http://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
 
 	<style>
 	* {
@@ -31,16 +40,24 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 	body {
 		/*background: url(images/bg.jpg) top center no-repeat #545454;*/
 	}
-	#inner {
-		min-width : 1100px;
+	#container {
+		max-width : 960px;
+		margin: 0px auto;
 	}
+	#user {
+		border-bottom: 1px solid black;
+		padding : 8px;
+	}
+	/*#inner {
+		min-width : 1100px;
+	}*/
 	table {
-		font-family: 'Just Another Hand', cursive;
-		font-size: 16pt;
-		font-weight: 300;
+		font-family: 'Roboto', sans-serif;
+		font-size: 12pt;
+		font-weight: 100;
 		border-collapse: collapse;
 		margin : 0 auto;
-		width : 910px;
+		width : 700px;
 		height : auto;
 		/*border : 3px solid black;*/
 	}
@@ -64,7 +81,6 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 	  	border-right: 0;
 	}
 	#calendar {
-
 	}
 	#calendarTitle {
 		font-size : 36pt;
@@ -86,11 +102,11 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 		text-align: center;
 	}
 	td {
-		width : 130px;
+		width : 100px;
 		height : 70px;
 	}
 	.calendarDayNumContainer {
-		width : 130px;
+		width : 100px;
 		height : 70px;
 	}
 	.calendarDayNum {
@@ -106,18 +122,21 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 		display : none;
 	}
 	#user_list {
-		font-family: 'Just Another Hand', cursive;
-		font-size: 20pt;
+		font-family: 'Roboto', sans-serif;
+		font-size: 12pt;
 		float : left;
 		width : 100px;
+		padding: 10px;
+
 	}
 
 	#tooltip {
-	    background: #e3e3e3 url(../images/search.png) no-repeat 5px 50%;
+	    /*background: #fff url(../images/search.png) no-repeat 5px 50%;*/
+	    background-color: white;
 	    border: 1px solid #BFBFBF;
 	    float: left;
 	    font-size: 12px;
-	    max-width: 160px;
+	    max-width: 120px;
 	    padding: 1em 1em 1em 3em;
 	    position: absolute;
 	}
@@ -125,39 +144,48 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 	.rounded {
 	    -moz-border-radius: 3px;
 	    -webkit-border-radius: 3px;
+	    -webkit-box-shadow: 2px 2px 4px #888;
+		-moz-box-shadow: 2px 2px 4px #888;
+		box-shadow: 2px 2px 4px #888;
 	}
 	</style>
 </head>
 
 <body>
-
-<div>
-	<h3 id="sign_title">
-		<?php if (!isset($_SESSION['user'])) echo "Sign In"; ?>
-	</h3>
-	<div id="sign_log">
-		<?php if (!isset($_SESSION['user'])) echo 'Email : <input id="log_in_email" type="text" /><br />
-		Password : <input id="log_in_pass" type="password" /><br />
-		<a href="#" onclick="register()">Register</a>
-		<button onclick="logIn()">log in</button>'; ?>
+<div id="container">
+	<div id="user">
+		<h3 id="sign_title">
+			<?php if (!isset($_SESSION['user'])) echo "Sign In"; ?>
+		</h3>
+		<div id="sign_log">
+			<?php if (!isset($_SESSION['user'])) echo 'Email : <input id="log_in_email" type="text" /><br />
+			Password : <input id="log_in_pass" type="password" /><br />
+			<a href="#" onclick="register()">Register</a>
+			<button onclick="logIn()">log in</button>'; ?>
+		</div>
+		<div id="register">
+			<h3>Register</h3>
+			<input id="register_name" type="text" /><br/>
+			<input id="register_email" type="email" /><br/>
+			<input id="register_pass" type="password" /><br/>
+			<input id="register_pass2" type="password" /><br/>
+		</div>
 	</div>
-	<div id="register">
-		<h3>Register</h3>
-		<input id="register_name" type="text" /><br/>
-		<input id="register_email" type="email" /><br/>
-		<input id="register_pass" type="password" /><br/>
-		<input id="register_pass2" type="password" /><br/>
+	<div id="inner">
+		<div id="user_list"></div>
+		<div id="calendar"></div>
 	</div>
-</div>
-<div id="inner">
-	<div id="user_list"></div>
-	<div id="calendar"></div>
 </div>
 
 <script>
 
 //user object holds user ID for events
-var userObj = {};
+var userObj = {
+	ID : '',			
+	table : ''
+};
+
+
 
 function logIn(){
 	var email = document.getElementById('log_in_email').value;
@@ -172,7 +200,7 @@ function logIn(){
 		if (new RegExp("firstName").test(data)){
 			var data = JSON.parse(data);
 			userObj.ID = data.userID;
-			loggedIn.calendar();
+			loggedIn.calendar(); 
 			loggedIn.userlist();
 		} else {
 			alert(data);
@@ -197,34 +225,26 @@ function register(){
 	$('#register').show();
 }
 
-// function loggedIn(){
-// 	var ajax = {
-// 		type: "GET",
-// 		url : "class/calender_ajax.php",
-// 		data: "html"
-// 	};
-// 	$.ajax(ajax).done(function(data){
-// 		$('#sign_title').empty().text('Sign Out');
-// 		$('#sign_log').empty().html('<button onclick="logOut()">log out</button>');
-// 		$('#calendar').append(data).hide().slideDown(750).show();
-
-// 		init();	
-// 	});
-// }
-
 var loggedIn = {
-	calendar : function(){
+	calendar : function(table){
+		
 		var ajax = {
 			type: "GET",
 			url : "class/calender_ajax.php",
-			data: "html"
+			data: {
+				table : userObj.table                     
+			}
 		};
 		$.ajax(ajax).done(function(data){
+
 			$('#sign_title').empty().text('Sign Out');
 			$('#sign_log').empty().html('<button onclick="logOut()">log out</button>');
 			$('#calendar').append(data).hide().slideDown(750).show();
 
+			userObj.table = $('#tableName').attr('data-tableName');
+
 			init();	
+
 		});
 	},
 	userlist : function(){
@@ -248,7 +268,8 @@ function init(){
 			url : "class/calender_ajax.php",
 			data : {
 				month : preMonth,
-				year : preYear
+				year : preYear, 
+				table : userObj.table 						
 			},
 			dataType: "html", 	//return datatype
 		};
@@ -270,7 +291,8 @@ function init(){
 			url : "class/calender_ajax.php",
 			data : {
 				month : nextMonth,
-				year : nextYear
+				year : nextYear,
+				table : userObj.table						
 			},
 			dataType: "html", 	
 		};
@@ -306,7 +328,8 @@ function init(){
 				day : day,
 				month : month,
 				year : year,
-				userID : userID
+				userID : userID, 
+				table : userObj.table
 			},
 			dataType: "html", 	
 		};
@@ -320,7 +343,8 @@ function init(){
 					url : "class/calender_ajax.php",
 					data : {
 						month : month,
-						year : year
+						year : year,
+						table : userObj.table           
 					},
 					dataType: "html", 	
 				};
@@ -344,6 +368,16 @@ function init(){
 		alert('dot');
 	});
 
+	$('#trip_select').on('change', function(){		
+		userObj.table = $(this).val();	
+		$('#calendar, #user_list').empty();
+		loggedIn.calendar();
+		loggedIn.userlist();
+		alert(userObj.table);
+	});
+
+
+
 	//bind tooltip-plugin feature to td's
 	$('td').tooltip({
 	        rounded: true
@@ -355,8 +389,10 @@ init();
 
 
 
+
 //calls loggedIn() -- generates calendar if user visits from new window and still in Session.
 if('<?php if (isset($_SESSION['user'])) echo true; ?>' != ''){
+  $('#select_div').show();
   loggedIn.calendar();
   loggedIn.userlist();
 }
