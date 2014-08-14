@@ -242,6 +242,7 @@ var loggedIn = {
 			$('#calendar').append(data).hide().slideDown(750).show();
 
 			userObj.table = $('#tableName').attr('data-tableName');
+			$('#' + userObj.table).attr('selected', 'selected');
 
 			init();	
 
@@ -277,6 +278,8 @@ function init(){
 		$.ajax(ajax1).done(function(data){
 			$('#calendar').fadeOut(200, function(){
 				$(this).fadeIn(200).html(data);
+
+				$('#' + userObj.table).attr('selected', 'selected');
 				//redefines AJAX asynchronous functions since every event within init() is binded to a dynamically generated element.
 				init();
 			});
@@ -300,6 +303,8 @@ function init(){
 		$.ajax(ajax1).done(function(data){
 			$('#calendar').fadeOut(200, function(){
 				$(this).fadeIn(200).html(data);
+
+				$('#' + userObj.table).attr('selected', 'selected');
 				init();
 			});
 		});
@@ -354,6 +359,7 @@ function init(){
 					// });
 					$('#calendar').html(data);
 					if ($('#tooltip')) $('#tooltip').remove();
+					$('#' + userObj.table).attr('selected', 'selected');
 					init();
 				});
 
@@ -373,7 +379,7 @@ function init(){
 		$('#calendar, #user_list').empty();
 		loggedIn.calendar();
 		loggedIn.userlist();
-		alert(userObj.table);
+		// alert(userObj.table);
 	});
 
 

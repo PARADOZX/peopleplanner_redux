@@ -45,13 +45,6 @@ class dbquery{
 				}
 			}
 
-			// try {
-			// 	$q = "";
-
-			// } catch (PDOException $e) {
-			// 	echo $e->getMessage();
-			// }
-
 			if ($this->array == '') $this->array = array();
 
 			$returnArray = array();
@@ -65,6 +58,18 @@ class dbquery{
 
 			// $_SESSION['tableID'] = $this->array['tripInfo'][0]['tableName'];		///// V.2
 
+			try {
+				$q = "SELECT * FROM `tableuser` as tu INNER JOIN tableinfo as ti ON tu.tableID = ti.tableID WHERE userID = {$_SESSION['user']}";
+				$stmt = $this->DB->query($q);
+				$returnArray2 = array();
+				while ($result = $stmt->fetch()){
+					$returnArray2['tableName'] = $result['tableName'];
+					$returnArray2['tripName'] = $result['tripName'];
+					$this->array['allTrips'][] = $returnArray2;
+				}
+			} catch (PDOException $e) {
+				echo $e->getMessage();
+			}
 			return $this->table;
 
 

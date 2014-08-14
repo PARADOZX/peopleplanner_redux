@@ -73,11 +73,19 @@ class Calendar {
 		$this->day_num = 1;
 
 		echo '<div id="select_div">Select Trip
-				<select id="trip_select">
-				  <option value="dateuser1">1</option>
-				  <option value="dateuser2">2</option>
-				</select>
+				<select id="trip_select">';
+		foreach ($this->DBdata['allTrips'] as $key => $value){
+			echo "<option id='{$value['tableName']}' value = '{$value['tableName']}'>{$value['tripName']}</option>";
+		}
+		echo '</select>
 			</div><div id="tableName" data-tableName="'. $this->DBdata['tripInfo'][0]['tableName'] . '" hidden></div>';
+
+		// echo '<div id="select_div">Select Trip
+		// 		<select id="trip_select">
+		// 		  <option value="dateuser1">1</option>
+		// 		  <option value="dateuser2">2</option>
+		// 		</select>
+		// 	</div><div id="tableName" data-tableName="'. $this->DBdata['tripInfo'][0]['tableName'] . '" hidden></div>';
 
 		 //Here we start building the table heads 
 		echo "<table><caption>{$this->DBdata['tripInfo'][0]['tripName']}</caption>";
