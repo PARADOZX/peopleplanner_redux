@@ -1,12 +1,3 @@
-<!--
-TO DO: 
-
-1. Create the select list dynamically by PHP
-2. Find and fix the bug that automatically changes the calender back to Taiwan when scrolling up/down months for Niagara Falls.
-3. Find and fix the bug that automatically updates/changes the calendar for Niagara falls when toggling dates for Taiwan.
--->
-
-
 <?php
 
 session_start();
@@ -160,15 +151,16 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 		<div id="sign_log">
 			<?php if (!isset($_SESSION['user'])) echo 'Email : <input id="log_in_email" type="text" /><br />
 			Password : <input id="log_in_pass" type="password" /><br />
-			<a href="#" onclick="register()">Register</a>
+			<a href="#" onclick="register.show()">Register</a>
 			<button onclick="logIn()">log in</button>'; ?>
 		</div>
 		<div id="register">
 			<h3>Register</h3>
-			<input id="register_name" type="text" /><br/>
-			<input id="register_email" type="email" /><br/>
-			<input id="register_pass" type="password" /><br/>
-			<input id="register_pass2" type="password" /><br/>
+			<p>First Name: <input id="register_first_name" type="text" required/></p><br/>
+			<p>Email: <input id="register_email" type="email" /></p><br/>
+			<p>Password: <input id="register_pass" type="password" /></p><br/>
+			<p>Confirm Password: <input id="register_pass2" type="password" /></p><br/>
+			<button onclick="register.send()">Send</button>
 		</div>
 	</div>
 	<div id="inner">
@@ -220,10 +212,44 @@ function logOut(){
 	});
 }
 
-function register(){
-	$('#sign_log, #sign_title').empty();
-	$('#register').show();
-}
+var register = {
+	show : function (){
+		$('#sign_log, #sign_title').empty();
+		$('#register').show();
+	}, 
+	send : function(){
+		var first_name = document.getElementById('register_first_name').value;
+		var password1 = document.getElementById('register_pass').value;
+		var password2 = document.getElementById('register_pass2').value;
+		var email = document.getElementById('register_email').value;
+
+		var msg = '';
+		if (first_name === '' || password1 === '' || password2 === '' || email === '') msg += 'Make sure all fields are completed.\n';
+		if (validate.password(password1, password2) === false) msg += 'Please make sure passwords are the same. \n';
+		if (validate.email(email) === false) msg += 'Please make sure email is in proper format. \n';
+
+		if (msg != '') {
+			alert(msg);
+		} else {
+			//jQUERY promise....
+			var test = $.post("class/calender_ajax.php", {action : 'register', firstName : first_name, email : email, password : password1})
+			.then(function(data){
+				alert(data);
+			});
+		}
+	}
+};
+
+var validate = {
+	password : function(pass1, pass2){
+		if (pass1 === pass2) return true;
+		return false;
+	},
+	email : function(email){
+		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+   		return re.test(email);
+	}
+};
 
 var loggedIn = {
 	calendar : function(table){
@@ -255,7 +281,9 @@ var loggedIn = {
 			url : "class/calender_ajax.php",
 			data : {action : "userlist", table: userObj.table}
 		}).success(function(data){
+			if($('#is_admin').attr('data-admin') != 0)  $('#user_list').append('<span id="invite"><b>INVITE (ADMIN ONLY)</b></span>');
 			$('#user_list').append(data);
+
 		});
 	}
 };
@@ -382,7 +410,10 @@ function init(){
 		// loggedIn.userlist();
 	});
 
-
+    $('#invite').on('click', function(){
+    	$('#calendar, #user_list').hide();
+    	$('#inner').append('Invite Menu');
+    });
 
 	//bind tooltip-plugin feature to td's
 	$('td').tooltip({

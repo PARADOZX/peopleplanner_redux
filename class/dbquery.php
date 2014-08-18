@@ -28,7 +28,7 @@ class dbquery{
 			if ($this->table == '') {
 				//get table information from initial load.  retrieves information for the earliest table for the user
 				try {
-					$q = "SELECT tu.tableID, t.tripName, t.tableName FROM tableuser as tu INNER JOIN tableinfo as t ON tu.tableID = t.tableID where tu.userID = {$_SESSION['user']}";
+					$q = "SELECT tu.admin, tu.tableID, t.tripName, t.tableName FROM tableuser as tu INNER JOIN tableinfo as t ON tu.tableID = t.tableID where tu.userID = {$_SESSION['user']}";
 					$stmt = $this->DB->query($q);
 					$result = $stmt->fetch();
 				} catch (PDOException $e) {
@@ -37,7 +37,7 @@ class dbquery{
 			} else {
 				//get table information from all subsequent loads.
 				try {
-					$q = "SELECT tu.tableID, t.tripName, t.tableName FROM tableuser as tu INNER JOIN tableinfo as t ON tu.tableID = t.tableID where t.tableName = '$this->table' LIMIT 1";
+					$q = "SELECT tu.admin, tu.tableID, t.tripName, t.tableName FROM tableuser as tu INNER JOIN tableinfo as t ON tu.tableID = t.tableID where t.tableName = '$this->table' LIMIT 1";
 					$stmt = $this->DB->query($q);
 					$result = $stmt->fetch();
 				} catch (PDOException $e) {
@@ -51,6 +51,7 @@ class dbquery{
 			$returnArray['tableID'] = $result['tableID'];
 			$returnArray['tripName'] = $result['tripName'];
 			$returnArray['tableName'] = $result['tableName'];
+			$returnArray['admin'] = $result['admin'];
 
 			$this->array['tripInfo'][] = $returnArray;
 
@@ -184,8 +185,8 @@ class dbquery{
 	}
 
 	public function tooltip($date){
-		$result = $this->DB->query('SELECT firstName FROM user');
-		//retrieves number of users registered.  should MOVE THIS QUERY so that it's not queried each time theres a unique date.
+		$result = $this->DB->query("SELECT firstName FROM user as u INNER JOIN tableuser as tu ON u.userID = tu.userID INNER JOIN tableinfo as ti ON tu.tableID = ti.tableID WHERE ti.tableName = '$this->table'");
+		//retrieves number of users associated with this table.  should MOVE THIS QUERY so that it's not queried each time theres a unique date.
 		$tooltipInfo = array();
 		while($num = $result->fetch()){
 			$tooltipInfo['usernames'][] = $num['firstName'];

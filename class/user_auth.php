@@ -4,13 +4,15 @@
 class User_Auth {
      private $email;
      private $password;
+     private $DB;
 
-     function __construct($email, $pass){
+     function __construct($DB, $email, $pass){
           if (!empty($email) && !empty($pass)) {
                if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+                   $this->DB = $DB;
                    $this->email = $email;
                    $this->password = $pass;
-                   User_Auth::check_login($this->email, $this->password);
+                   User_Auth::check_login($this->DB, $this->email, $this->password);
                } else {
                     echo 'Please enter a valid email address.';
                }
@@ -20,7 +22,7 @@ class User_Auth {
           
      }
 
-     static function check_login($email = '', $pass = '') {
+     static function check_login($DB, $email = '', $pass = '') {
           $errors = array();
           if (empty($email)) {
                $errors[] = 'You forgot to enter your email address.';
@@ -35,20 +37,35 @@ class User_Auth {
           }
          
           if (empty($errors)) { 
-               $dbconnection = new dbconnect();
-               $DB = $dbconnection->connect();
-               $q = "SELECT firstName, userID FROM user WHERE email=? AND password=SHA1(?)";
+               // $dbconnection = new dbconnect();
+               // $DB = $dbconnection->connect();
 
+               $q = "SELECT firstName, userID, password FROM user WHERE email = ?";
                try {
                     $stmt = $DB->prepare($q);
-                    $stmt->execute(array($e, $p));
+                    $stmt->execute(array($e));
                     $stmt->setFetchMode(PDO::FETCH_ASSOC);
                     $result = $stmt->fetch();
+
                } catch (PDOException $e) {
                     echo $e->getMessage();
                }
+
+
+               // $q = "SELECT firstName, userID FROM user WHERE email=? AND password=SHA1(?)";
+
+               // try {
+               //      $stmt = $DB->prepare($q);
+               //      $stmt->execute(array($e, $p));
+               //      $stmt->setFetchMode(PDO::FETCH_ASSOC);
+               //      $result = $stmt->fetch();
+               // } catch (PDOException $e) {
+               //      echo $e->getMessage();
+               // }
+
+
                //if user found return user details in JSON
-               if ($result) {
+               if (password_verify($p, $result['password'])) {
 
                     //start session
                     session_start();

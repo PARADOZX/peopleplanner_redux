@@ -80,6 +80,9 @@ class Calendar {
 		echo '</select>
 			</div><div id="tableName" data-tableName="'. $this->DBdata['tripInfo'][0]['tableName'] . '" hidden></div>';
 
+		//if user is admin then set hidden value to false to show invite option
+		echo '<div id="is_admin" data-admin="' . $this->DBdata['tripInfo'][0]['admin'] . '" hidden>hihihi</div>';
+
 		 //Here we start building the table heads 
 		echo "<table><caption>{$this->DBdata['tripInfo'][0]['tripName']}</caption>";
 

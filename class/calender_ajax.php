@@ -10,6 +10,7 @@ include 'dbquery.php';
 include 'calendar.php';
 include 'user_auth.php';
 include 'usersquery.php';
+include 'register.php';
 
 $dbconnection = new dbconnect();
 
@@ -44,8 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	//check if POST action var is set to password.  if so, login 
 	if (isset($_POST['action']) && ($_POST['action'] === 'login')){
-		$user_auth = new User_Auth($_POST['email'], $_POST['password']);
-		
+		$user_auth = new User_Auth($dbconnection->connect(), $_POST['email'], $_POST['password']);
+	} else if (isset($_POST['action']) && ($_POST['action'] === 'register')){ 
+		$register = new Register($dbconnection->connect(), $_POST['firstName'], $_POST['email'], $_POST['password']);
 	} else {
 		$dbquery = new dbquery($dbconnection->connect(), $_POST['table']);
 		$dbquery->toggleDate();
