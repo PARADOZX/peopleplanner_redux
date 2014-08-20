@@ -9,15 +9,18 @@ class dbquery{
 	protected $day;
 	protected $userID;
 	public $table = '';      
-	protected $array = '';                   
+	protected $array = '';    
+	protected $tableKey;               
 	
-	function __construct(PDO $connect, $table=''){     
+	function __construct(PDO $connect, $table='', $tableKey = ''){     
 		//pass in DB connection
 		if ($this->DB == '') $this->DB = $connect;
 
 		if ($table != '') {
 			$this->table = $table;
-		}	
+		}
+
+		if ($tableKey != '') $this->tableKey = $tableKey;
 	}
 
 	public function getTableInfo(){
@@ -31,6 +34,12 @@ class dbquery{
 					$q = "SELECT tu.admin, tu.tableID, t.tripName, t.tableName FROM tableuser as tu INNER JOIN tableinfo as t ON tu.tableID = t.tableID where tu.userID = {$_SESSION['user']}";
 					$stmt = $this->DB->query($q);
 					$result = $stmt->fetch();
+
+					//no tables associated with user (ie. just registered)
+					if (!$result) {
+						return false;
+					}
+
 				} catch (PDOException $e) {
 					echo $e->getMessage();
 				}
@@ -70,8 +79,6 @@ class dbquery{
 				echo $e->getMessage();
 			}
 			return $this->table;
-
-
 			
 		}
 	}
@@ -184,6 +191,37 @@ class dbquery{
 		} 
 	}
 
+	public function getTableByKey(){
+		try {
+			$q = "SELECT tableName, tableID from tableinfo WHERE keyID = ?";
+			$stmt = $this->DB->prepare($q);
+			$stmt->execute(array($this->tableKey));
+			$result = $stmt->fetch();
+		} catch (PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		if ($result) {
+			$tableID = $result['tableID'];
+			try {
+				
+				$result = $this->DB->query("SELECT userID FROM tableuser WHERE tableID = $tableID AND userID = {$_SESSION['user']}");
+				
+				if ($result->rowCount() < 1){
+					$result = $this->DB->query("INSERT INTO tableuser (tableID, userID) VALUES ($tableID, {$_SESSION['user']})");
+					return false;
+				} else {
+					echo 'You already joined this trip.';
+				}
+
+			} catch (PDOException $e) {
+				echo $e->getMessage();
+			}	
+		} else {
+			echo "Unknown trip ID.  Try again.";
+		}
+	}
+
 	public function tooltip($date){
 		$result = $this->DB->query("SELECT firstName FROM user as u INNER JOIN tableuser as tu ON u.userID = tu.userID INNER JOIN tableinfo as ti ON tu.tableID = ti.tableID WHERE ti.tableName = '$this->table'");
 		//retrieves number of users associated with this table.  should MOVE THIS QUERY so that it's not queried each time theres a unique date.
@@ -209,12 +247,5 @@ class dbquery{
 
 	}
 }
-
-//DEBUGGER
-// $dbconnect = new dbconnect();
-// $dbquery = new dbquery($dbconnect->connect());
-// $array = json_encode($dbquery->getDate());
-// print_r($array);
-
 
 ?>

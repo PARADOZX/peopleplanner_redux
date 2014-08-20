@@ -1,3 +1,5 @@
+
+
 <?php
 
 session_start();
@@ -166,7 +168,9 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 	<div id="inner">
 		<div id="user_list"></div>
 		<div id="calendar"></div>
+		<div id="start_page"></div>
 	</div>
+	
 </div>
 
 <script>
@@ -265,13 +269,18 @@ var loggedIn = {
 
 			$('#sign_title').empty().text('Sign Out');
 			$('#sign_log').empty().html('<button onclick="logOut()">log out</button>');
-			$('#calendar').append(data).hide().slideDown(750).show();
 
-			userObj.table = $('#tableName').attr('data-tableName');
-			$('#' + userObj.table).attr('selected', 'selected');
+			if (data != false) {
+				$('#calendar').append(data).hide().slideDown(750).show();
 
-			loggedIn.userlist();
-			init();	
+				userObj.table = $('#tableName').attr('data-tableName');
+				$('#' + userObj.table).attr('selected', 'selected');
+
+				loggedIn.userlist();
+				init();	
+			} else {
+				pages.renderpage('#start_page', pages.startpage());
+			}
 
 		});
 	},
@@ -285,6 +294,48 @@ var loggedIn = {
 			$('#user_list').append(data);
 
 		});
+	}
+};
+
+var pages = {
+	events : function(){
+		$('#trip_id_button').on('click', function(){
+			var tableKey = $('#trip_id').val();
+			$.get('class/calender_ajax.php', {action : 'join' , tableKey : tableKey})
+			.then(function(data){
+				if (data == false){
+					//'refresh' page when user joins table
+					$('#start_page').empty();
+					loggedIn.calendar();
+				} else {
+					alert(data);
+				}
+
+			});
+		});
+	},
+	//this may actually be less efficient
+	renderpage : function(id, page){
+		$(id).empty();
+		$(id).append(page);
+		this.events();
+	},
+	startpage : function(){
+		//would HEREDOC work here?
+		var startpage = '<br/ ><h2 class="header">Get Started</h2><br />';
+		startpage += '<div onclick="pages.renderpage(' + "'#start_page' , pages.createtrip()" + ')">Create A New Trip!</div><br />';
+		startpage += '<div onclick="pages.renderpage(' + "'#start_page', pages.jointrip()" + ')">Join An Existing Trip!</div>';
+		return startpage;
+	},
+	jointrip : function(){
+		var existingtrip = '<br /><h2>Join An Existing Trip</h2><br/>';
+		existingtrip += '<div>Enter Trip Key: ' + '<input type="text" id="trip_id" /><button id="trip_id_button">Go!</button></div><br />';
+		existingtrip += '<button onclick="pages.renderpage(' + "'#start_page', pages.startpage())" + '">Go back</button>';
+		return existingtrip;
+	}, 
+	createtrip: function(){
+		var createtrip = '<br /><h2>Create A New Trip</h2><br />';
+		createtrip += '';
 	}
 };
 

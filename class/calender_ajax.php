@@ -25,8 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 		$usersquery = new Usersquery($dbconnection->connect(), $_GET['table']);
 		$usersquery->getUsers();
 
+	} else if (isset($_GET['action']) && ($_GET['action'] === 'join')){
+
+		$usersquery = new dbquery($dbconnection->connect(), '', $_GET['tableKey']);
+		$usersquery->getTableByKey();
 
 	} else if (!isset($_GET['action']) && !empty($_GET['table'])) {
+
 		$dbquery = new dbquery($dbconnection->connect(), $_GET['table']);  
 		$tableName = $dbquery->getTableInfo();
 		$calender = new Calendar($dbquery->getAllDates(), $tableName); 
@@ -34,12 +39,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 		$calender->render();
 
 	} else if (!isset($_GET['action'])){		
+
 		$dbquery = new dbquery($dbconnection->connect());  
 		$tableName = $dbquery->getTableInfo();
-		$calender = new Calendar($dbquery->getAllDates(), $tableName); 
-		$calender->create();
-		$calender->render();
 
+		if($tableName != false) {
+			$calender = new Calendar($dbquery->getAllDates(), $tableName); 
+			$calender->create();
+			$calender->render();
+		} else {
+		
+			return false;
+		}
 	}
 
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
