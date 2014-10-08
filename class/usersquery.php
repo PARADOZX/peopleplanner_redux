@@ -18,11 +18,15 @@ class Usersquery {
 			$stmt = $this->DB->prepare($q);
 			$stmt->execute();
 			$stmt->setFetchMode(PDO::FETCH_ASSOC);
-			echo '<span>Attendees</span>';
+			// echo '<div id="create_join_menu">
+			// 	    <div onclick="pages.renderpage('. "'#user_list, #calendar', '#start_page', pages.createtrip()" .')">Create New Trip</div><br />
+			// 	    <div onclick="pages.renderpage('. "'#user_list, #calendar', '#start_page', pages.jointrip()" .')">Join An Existing Trip</div><br />
+			// 	  </div>';
+			echo '<div id="users_display"><b>Attendees</b><hr/>';
 			while ($result = $stmt->fetch()){
-				echo '<br />' . "<div id='attendee_list'><div title='" . $result['firstName'] . "' style='background-color:" . $result['color'] . "' class='dot'></div>" . 
-					$result['firstName'] . '</div>';
+				echo '<br />' . "<div class='attendees'>" . $result['firstName'] . "<div title='" . $result['firstName'] . "' style='background-color:" . $result['color'] . "' class='attendees_dot'></div></div>";
 			}
+			echo '</div>';
 		} catch (PDOException $e){
 			echo $e->getMessage();
 		}

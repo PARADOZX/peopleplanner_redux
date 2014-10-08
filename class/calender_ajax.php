@@ -11,8 +11,10 @@ include 'calendar.php';
 include 'user_auth.php';
 include 'usersquery.php';
 include 'register.php';
+//include 'email.php';
+// include 'test.php';     				//DELETE DEBUGG
 
-$dbconnection = new dbconnect();
+$dbconnection = new dbconnect();		
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 	//check if GET action var is set to logout.  if so, log out.
@@ -52,17 +54,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 			return false;
 		}
 	}
-
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	//check if POST action var is set to password.  if so, login 
 	if (isset($_POST['action']) && ($_POST['action'] === 'login')){
 		$user_auth = new User_Auth($dbconnection->connect(), $_POST['email'], $_POST['password']);
 	} else if (isset($_POST['action']) && ($_POST['action'] === 'register')){ 
-		$register = new Register($dbconnection->connect(), $_POST['firstName'], $_POST['email'], $_POST['password']);
+		try {			
+			$register = new Register($dbconnection->connect(), $_POST['firstName'], $_POST['email'], $_POST['password']);
+		} catch (Exception $e) {
+			echo 'whatwhat';
+		}			
+	} else if (isset($_POST['action']) && ($_POST['action'] === 'new')){
+
+		$usersquery = new dbquery($dbconnection->connect());
+		$usersquery->setNewTrip($_POST['newTripName']);
+	} else if (isset($_POST['action']) && ($_POST['action'] === 'send_invite')){
+		$dbquery = new dbquery($dbconnection->connect(), $_POST['table']);
+		// $dbquery->send_invite();
+		echo $_POST['email'] . ' ' . $_POST['table'];
+		mail("jcc9283@hotmail.com", "test", "this is a test");
 	} else {
 		$dbquery = new dbquery($dbconnection->connect(), $_POST['table']);
 		$dbquery->toggleDate();
 	}
 }
+
 
 ?> 

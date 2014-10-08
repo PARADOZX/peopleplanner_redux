@@ -72,19 +72,31 @@ class Calendar {
 		$day_count = 1;
 		$this->day_num = 1;
 
-		echo '<div id="select_div">Select Trip
-				<select id="trip_select">';
+		echo '<nav>
+		        <ul>
+		          <li id="select_div">Select Trip <select id="trip_select">';
 		foreach ($this->DBdata['allTrips'] as $key => $value){
 			echo "<option id='{$value['tableName']}' value = '{$value['tableName']}'>{$value['tripName']}</option>";
 		}
-		echo '</select>
-			</div><div id="tableName" data-tableName="'. $this->DBdata['tripInfo'][0]['tableName'] . '" hidden></div>';
+
+		echo '</select></li>
+				  <li id="nav_analytics">Analytics<img src="img/down_arrow.png" />
+				    <ul>
+				      <li id="nav_analytics_test" onclick="">Test</li>
+				    </ul>
+				  </li>
+				  <li id="nav_create" onclick="pages.renderpage('. "'#user_list, #calendar', '#start_page', pages.createtrip()" .')">Create New Trip</li>
+				  <li id="nav_join" onclick="pages.renderpage('. "'#user_list, #calendar', '#start_page', pages.jointrip()" .')">Join An Existing Trip</li>
+			    </ul>
+			  </nav>';
+
+		echo '<div id="tableName" data-tableName="'. $this->DBdata['tripInfo'][0]['tableName'] . '" hidden></div>';
 
 		//if user is admin then set hidden value to false to show invite option
-		echo '<div id="is_admin" data-admin="' . $this->DBdata['tripInfo'][0]['admin'] . '" hidden>hihihi</div>';
+		echo '<div id="is_admin" data-admin="' . $this->DBdata['tripInfo'][0]['admin'] . '" hidden></div>';
 
 		 //Here we start building the table heads 
-		echo "<table><caption>{$this->DBdata['tripInfo'][0]['tripName']}</caption>";
+		echo "<br/><br/><br/><table id='calendar_view'><caption>" . strtoupper($this->DBdata['tripInfo'][0]['tripName']) . "</caption>";
 
 		echo "<tr><th colspan=7><span id='previousMonth' data-preMonth='" . $this->previousMonth . "' data-preYear='" . (($this->previousYear) ? $this->year - 1 : $this->year) . "' style='font-size:10pt; float: left' class='scrollNextMonth'>Previous Month</span><span id='calendarTitle'>$this->title $this->year</span><span id='nextMonth' data-nextMonth='" . $this->nextMonth . "' data-nextYear='" . (($this->nextYear) ? $this->year + 1 : $this->year) . "' style='font-size:10pt; float: right' class='scrollNextMonth'>Next Month</span></th></tr>";
 
@@ -97,7 +109,7 @@ class Calendar {
 		//first we take care of those blank days
 
 		while ( $this->blank > 0 ) { 
-			echo "<td></td>"; 
+			echo "<td class='calendar_blank_days'></td>"; 
 			$this->blank = $this->blank-1; 
 			$day_count++;
 		} 
@@ -120,7 +132,7 @@ class Calendar {
 
 		 //Finaly we finish out the table with some blank details if needed
 		while ( $day_count >1 && $day_count <=7 ){		 
-			 echo "<td> </td>"; 
+			 echo "<td class='calendar_blank_days'> </td>"; 
 		    $day_count++; 
 		} 
 

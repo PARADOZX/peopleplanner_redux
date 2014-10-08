@@ -12,7 +12,7 @@ class dbquery{
 	protected $array = '';    
 	protected $tableKey;               
 	
-	function __construct(PDO $connect, $table='', $tableKey = ''){     
+	function __construct(PDO $connect, $table='', $tableKey=''){     
 		//pass in DB connection
 		if ($this->DB == '') $this->DB = $connect;
 
@@ -220,6 +220,52 @@ class dbquery{
 		} else {
 			echo "Unknown trip ID.  Try again.";
 		}
+	}
+
+	public function setNewTrip($newTripName){
+
+		try{
+			date_default_timezone_set('America/New_York');
+			$date = date('mdYhis');
+
+			$tableName = strtolower(substr(preg_replace('/\s+/', '', $newTripName), 0, 3)) . $date;
+			
+			// $newTripName = $this->DB->quote($newTripName);  //do not uncomment this.
+
+			$q = "CREATE TABLE " . $tableName . " (dateUserID int auto_increment, dateID int, userID int, primary key(dateUserID))";	
+			$stmt = $this->DB->query($q);
+
+			if ($stmt) {
+
+				$characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+				$keyID = '';
+				for ($i = 0; $i < 10; $i++) {
+				      $keyID .= $characters[rand(0, strlen($characters) - 1)];
+				}
+
+				$q = "INSERT INTO tableinfo (tableName, tripName, keyID) VALUES (?, ?, ?)";
+				$stmt = $this->DB->prepare($q);
+				$result = $stmt->execute(array($tableName, $newTripName, $keyID));
+
+				if ($result) {
+					$lastID = $this->DB->lastInsertId();
+					$result = $this->DB->query("INSERT INTO tableuser (tableID, userID, admin) VALUES ($lastID, {$_SESSION['user']}, 1)");
+					
+					if ($result) {
+						echo 'Table created successfully';
+					}
+				}
+
+			} else echo 'ERROR';
+
+		} catch (PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
+	public function get(){
+
 	}
 
 	public function tooltip($date){

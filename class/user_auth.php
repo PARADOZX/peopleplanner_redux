@@ -50,22 +50,9 @@ class User_Auth {
                } catch (PDOException $e) {
                     echo $e->getMessage();
                }
-
-
-               // $q = "SELECT firstName, userID FROM user WHERE email=? AND password=SHA1(?)";
-
-               // try {
-               //      $stmt = $DB->prepare($q);
-               //      $stmt->execute(array($e, $p));
-               //      $stmt->setFetchMode(PDO::FETCH_ASSOC);
-               //      $result = $stmt->fetch();
-               // } catch (PDOException $e) {
-               //      echo $e->getMessage();
-               // }
-
-
-               //if user found return user details in JSON
+               // if user found return user details in JSON
                if (password_verify($p, $result['password'])) {
+               // if ($p == $result['password']) {
 
                     //start session
                     session_start();
@@ -84,16 +71,12 @@ class User_Auth {
           }
      }
 
-     static function register(){
-
-     }
-
      static function logOut(){
           session_unset();     // unset $_SESSION variable for the run-time 
           session_destroy();   // destroy session data in storage
           setcookie('PHPSESSID', '', time()-3600, '/', '', 0, 0);
 
-          echo "<h2>You have logged out.</h2>";
+          echo "<h2>You have logged out.</h2><br /><p>Click <a href=''>here</a> to login again.</p>";
      }
 }
 ?>

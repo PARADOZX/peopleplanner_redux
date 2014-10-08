@@ -5,7 +5,7 @@ class Register {
 	private $firstName;
 	private $email;
 	private $password;
-	private $colors = array('blue', 'red', 'green', 'yellow', 'orange', 'purple', 'black');
+	private $colors = array('blue', 'red', 'green', 'yellow', 'orange', 'purple', 'black', 'gray', 'olive', 'yellowgreen', 'pink');
 
 	function __construct($DB, $firstName, $email, $password){
 		//add validation 
@@ -13,7 +13,7 @@ class Register {
 		$this->firstName = $firstName;
 		$this->email = $email;
 		$this->password = $password;
-		$this->connect();
+		$this->connect();	
 	}
 
 	private function connect(){
@@ -26,15 +26,20 @@ class Register {
 				$colorsArray[] = $num['color'];
 			}
 
-			//determine remaining colors available
+			// //determine remaining colors available
 			$colorsRemain = array_diff($this->colors, $colorsArray);
 
 			$q = "INSERT INTO user (firstName, email, password, color) VALUES (?, ?, ?, ?)";
 			$stmt = $this->DB->prepare($q);
+
+			//UNCOMMENT - DEBUG
 			$result = $stmt->execute(array($this->firstName, $this->email, password_hash($this->password, PASSWORD_BCRYPT), reset($colorsRemain)));
-			
+
+			//DELETE - DEBUG //password hash is not supported by bluehost since ver. 5.4 vs 5.5 on localhost
+			// $result = $stmt->execute(array($this->firstName, $this->email, $this->password, reset($colorsRemain)));
+
 			if ($result) {
-				echo 'Registration Successful';
+				echo 'Registration Successful.  Login above.';
 			} else echo 'Registration Error';
 		
 		} catch (PDOException $e) {
