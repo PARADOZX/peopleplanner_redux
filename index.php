@@ -69,8 +69,9 @@ function logIn(){
 	var password = document.getElementById('log_in_pass').value;
 	$.ajax({
 		type: "POST",
-		url : "class/calender_ajax.php",
-		data : {email : email, password : password, action : 'login'}
+		// url : "class/calender_ajax.php",
+		url : "app.php",
+		data : {ctrl : 'Auth', action : 'login', email : email, password : password}
 	}).done(function(data){
 		// if data does not contain the text 'firstName' then no user match or server error
 		if (new RegExp("firstName").test(data)){
@@ -86,8 +87,10 @@ function logIn(){
 function logOut(){
 	$.ajax({
 		type : "GET",
-		url : "class/calender_ajax.php",
+		// url : "class/calender_ajax.php",
+		url : "app.php",  //v.2
 		data : {
+			ctrl : 'Auth',
 			action : 'logout'
 		}
 	}).done(function(data){
@@ -113,10 +116,15 @@ var register = {
 		if (validate.email(email) === false) msg += 'Please make sure email is in proper format. \n';
 
 		if (msg != '') {
-			alert(msg);
+			alert('something is wrong.');
 		} else {
-			//jQUERY promise....
-			var test = $.post("class/calender_ajax.php", {action : 'register', firstName : first_name, email : email, password : password1})
+			// var test = $.post("class/calender_ajax.php", {action : 'register', firstName : first_name, email : email, password : password1})
+			// .then(function(data){
+			// 	$('#register').hide();
+			// 	$('#sign_log, #sign_title').show();
+			// 	$('#start_page').append(data);
+			// });
+			var test = $.post("app.php", {ctrl: 'Auth', action : 'register', firstName : first_name, email : email, password : password1})
 			.then(function(data){
 				$('#register').hide();
 				$('#sign_log, #sign_title').show();
@@ -152,16 +160,17 @@ var validate = {
 
 var loggedIn = {
 	calendar : function(table){
-		
 		var ajax = {
-			type: "GET",
-			url : "class/calender_ajax.php",
+			type: 'GET',
+			// url : "class/calender_ajax.php",
+			url : 'app.php',	//v.2
 			data: {
+				ctrl : 'App',
+				action : 'loadTable',
 				table : userObj.table                     
 			}
 		};
 		$.ajax(ajax).done(function(data){
-
 			$('#sign_title').empty();
 			$('#sign_log').empty().html('<button onclick="logOut()">log out</button>');
 
@@ -185,9 +194,14 @@ var loggedIn = {
 	userlist : function(){
 		$.ajax({
 			type: "GET",
-			url : "class/calender_ajax.php",
-			data : {action : "userlist", table: userObj.table}
-		}).success(function(data){
+			// url : "class/calender_ajax.php",
+			url : 'app.php',	//v.2
+			data : {
+				ctrl : 'App',
+				action : "getUserList", 
+				table: userObj.table
+			}
+		}).done(function(data){
 			if(document.getElementById('is_admin').getAttribute('data-admin') != 0) {
 				$('#user_list').append('<div id="invite"><button id="invite_button">Invite</button></div>');
 				$('#invite').on('click', function(){
@@ -201,8 +215,9 @@ var loggedIn = {
 	send_invite : function(email){
 		$.ajax({
 			type: "POST",
-			url : "class/calender_ajax.php",
-			data : {action : "send_invite", table: userObj.table, email: email}
+			// url : "class/calender_ajax.php",
+			url : 'app.php',  //v.2
+			data : {ctrl : 'App', action : "sendInvite", table: userObj.table, email: email}
 		}).success(function(data){
 			alert(data);
   		});    
@@ -213,7 +228,8 @@ var pages = {
 	events : function(){
 		$('#trip_id_button').on('click', function(){
 			var tableKey = $('#trip_id').val();
-			$.get('class/calender_ajax.php', {action : 'join' , tableKey : tableKey})
+			// $.get('class/calender_ajax.php', {action : 'join' , tableKey : tableKey})
+			$.get('app.php', {ctrl : 'App', action : 'joinExistingTrip' , tableKey : tableKey})  //v.2
 			.then(function(data){
 				if (data == false){
 					//'refresh' page when user joins table
@@ -229,7 +245,8 @@ var pages = {
 		//create a new trip
 		$('#new_trip_button').on('click', function(){
 			var newTripName = $('#new_trip').val();
-			$.post('class/calender_ajax.php', {action : 'new', newTripName : newTripName})
+			// $.post('class/calender_ajax.php', {action : 'new', newTripName : newTripName})
+			$.post('app.php', {ctrl : 'App', action : 'createNewTrip', newTripName : newTripName})  //v.2
 			.then(function(data){
 				alert(data);
 				$('#start_page').empty();
@@ -280,11 +297,14 @@ function init(){
 		var preYear = $(this).attr('data-preYear');
 		var ajax1 = {
 			type: "GET",
-			url : "class/calender_ajax.php",
+			// url : "class/calender_ajax.php",
+			url : 'app.php',
 			data : {
 				month : preMonth,
 				year : preYear, 
-				table : userObj.table 						
+				table : userObj.table,
+				ctrl : 'App', 
+				action : 'loadTable'
 			},
 			dataType: "html", 	//return datatype
 		};
@@ -305,11 +325,14 @@ function init(){
 		var nextYear = $(this).attr('data-nextYear');
 		var ajax1 = {
 			type: "GET",
-			url : "class/calender_ajax.php",
+			// url : "class/calender_ajax.php",
+			url : 'app.php',	//v.2
 			data : {
 				month : nextMonth,
 				year : nextYear,
-				table : userObj.table						
+				table : userObj.table,
+				ctrl : 'App', 
+				action : 'loadTable'					
 			},
 			dataType: "html", 	
 		};
@@ -359,13 +382,16 @@ function init(){
 
 		var ajax1 = {
 			type: "POST",
-			url : "class/calender_ajax.php",
+			// url : "class/calender_ajax.php",
+			url : 'app.php',
 			data : {
 				day : day,
 				month : month,
 				year : year,
 				userID : userID, 
-				table : userObj.table
+				table : userObj.table,
+				ctrl : 'App',
+				action : 'toggleDate'
 			},
 			dataType: "html", 	
 		};
@@ -376,11 +402,14 @@ function init(){
 			if (data == true) {
 				var ajax1 = {
 					type: "GET",
-					url : "class/calender_ajax.php",
+					// url : "class/calender_ajax.php",
+					url : 'app.php',
 					data : {
 						month : month,
 						year : year,
-						table : userObj.table           
+						table : userObj.table,
+						ctrl : 'App',
+						action : 'loadTable'        
 					},
 					dataType: "html", 	
 				};

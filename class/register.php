@@ -13,13 +13,14 @@ class Register {
 		$this->firstName = $firstName;
 		$this->email = $email;
 		$this->password = $password;
-		$this->connect();	
+		// $this->connect();	
 	}
 
-	private function connect(){
+	public function registerUser(){
 		try {
 			$q = "SELECT color FROM user";
 			$result = $this->DB->query($q);
+
 			$colorsArray = array();
 			
 			while ($num = $result->fetch()){
@@ -48,6 +49,7 @@ class Register {
 				echo $this->email . ' already registered.';
 			}
 		}
+
 	}
 
 

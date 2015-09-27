@@ -10,9 +10,9 @@ include 'dbquery.php';
 include 'calendar.php';
 include 'user_auth.php';
 include 'usersquery.php';
-include 'register.php';
+include 'Register.php';
+include 'dbconnect.php';
 //include 'email.php';
-// include 'test.php';     				//DELETE DEBUGG
 
 $dbconnection = new dbconnect();		
 
@@ -41,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 		$calender->render();
 
 	} else if (!isset($_GET['action'])){		
-
 		$dbquery = new dbquery($dbconnection->connect());  
 		$tableName = $dbquery->getTableInfo();
 
@@ -65,7 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 			echo 'whatwhat';
 		}			
 	} else if (isset($_POST['action']) && ($_POST['action'] === 'new')){
-
 		$usersquery = new dbquery($dbconnection->connect());
 		$usersquery->setNewTrip($_POST['newTripName']);
 	} else if (isset($_POST['action']) && ($_POST['action'] === 'send_invite')){

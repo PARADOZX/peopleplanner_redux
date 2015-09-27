@@ -1,7 +1,5 @@
 <?php
 
-include 'dbconnect.php'; //DEBUGGER
-
 class dbquery{
 	protected $DB = '';
 	protected $month;  
@@ -12,29 +10,23 @@ class dbquery{
 	protected $array = '';    
 	protected $tableKey;               
 	
-	function __construct(PDO $connect, $table='', $tableKey=''){     
-		//pass in DB connection
-		if ($this->DB == '') $this->DB = $connect;
-
-		if ($table != '') {
-			$this->table = $table;
-		}
-
-		if ($tableKey != '') $this->tableKey = $tableKey;
+	function __construct($DB, $table='', $tableKey=''){     
+		$this->DB = $DB;
+		$this->table = $table;
+		$this->tableKey = $tableKey;
 	}
 
 	public function getTableInfo(){
 		if (!isset($_SESSION['user']) && !filter_var($_SESSION['user'], FILTER_VALIDATE_INT)){
-			//Add error handling.
+			throw new Exception('A user has not signed in.');	
 		} else {
-
-			if ($this->table == '') {
+			if (empty($this->table)) {
 				//get table information from initial load.  retrieves information for the earliest table for the user
 				try {
 					$q = "SELECT tu.admin, tu.tableID, t.tripName, t.tableName FROM tableuser as tu INNER JOIN tableinfo as t ON tu.tableID = t.tableID where tu.userID = {$_SESSION['user']}";
 					$stmt = $this->DB->query($q);
 					$result = $stmt->fetch();
-
+					
 					//no tables associated with user (ie. just registered)
 					if (!$result) {
 						return false;
@@ -54,7 +46,7 @@ class dbquery{
 				}
 			}
 
-			if ($this->array == '') $this->array = array();
+			if (empty($this->array)) $this->array = array();
 
 			$returnArray = array();
 			$returnArray['tableID'] = $result['tableID'];
@@ -101,7 +93,7 @@ class dbquery{
 		$stmt->execute(array($this->year, $this->month));
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 
-		if ($this->array == '') $this->array = array();
+		if (empty($this->array)) $this->array = array();
 
 		$this->array['uniqueDates'] = array();
 		
@@ -264,8 +256,16 @@ class dbquery{
 		}
 	}
 
-	public function get(){
+	public function sendInvite(){
+		$table = $_POST['table'];
+		$email = $_POST['email'];
 
+		//run query .. retrieve table keyID by tableID
+
+		$subject = 'You have been invited';
+		$message = 'This is my email string.  YOu are hereby invited to join the group Pigu';
+	
+		//mail($email, $subject, $string);
 	}
 
 	public function tooltip($date){

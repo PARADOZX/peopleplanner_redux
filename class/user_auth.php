@@ -12,47 +12,43 @@ class User_Auth {
                    $this->DB = $DB;
                    $this->email = $email;
                    $this->password = $pass;
-                   User_Auth::check_login($this->DB, $this->email, $this->password);
                } else {
-                    echo 'Please enter a valid email address.';
+                    throw new Exception('Please enter a valid email.');
                }
           } else {
-               echo 'Please enter email and password to log in.';
+               throw new Exception('Please enter email and password.');
           }
           
      }
 
-     static function check_login($DB, $email = '', $pass = '') {
+     public function loginUser() {
           $errors = array();
-          if (empty($email)) {
+          if (empty($this->email)) {
                $errors[] = 'You forgot to enter your email address.';
           } else {
-               $e = trim($email);
+               $email = trim($this->email);
           }
          
-          if (empty($pass)) {
+          if (empty($this->password)) {
                $errors[] = 'You forgot to enter your password.';
           } else {
-               $p = trim($pass);
+               $pass = trim($this->password);
           }
          
           if (empty($errors)) { 
-               // $dbconnection = new dbconnect();
-               // $DB = $dbconnection->connect();
-
                $q = "SELECT firstName, userID, password FROM user WHERE email = ?";
                try {
-                    $stmt = $DB->prepare($q);
-                    $stmt->execute(array($e));
+                    $stmt = $this->DB->prepare($q);
+                    $stmt->execute(array($email));
                     $stmt->setFetchMode(PDO::FETCH_ASSOC);
                     $result = $stmt->fetch();
-
                } catch (PDOException $e) {
                     echo $e->getMessage();
                }
+
                // if user found return user details in JSON
-               if (password_verify($p, $result['password'])) {
-               // if ($p == $result['password']) {
+               if (password_verify($pass, $result['password'])) {
+               // if ($p == $result['password']) {     //bluehost
 
                     //start session
                     session_start();
@@ -64,7 +60,7 @@ class User_Auth {
                     }                 
                     echo json_encode($resultArr);
                } else {
-                    echo 'The email address and password entered do not match those on file.';
+                    throw new Exception('The email address and password entered do not match those on file.');
                }
           } else {
                print_r($errors);
