@@ -2,8 +2,7 @@
 
 
 class Calendar {
-	//sets the first day of the month to 1 
-    protected $days_in_month = 0;
+    protected $daysInMonth = 0;
     protected $day;
     protected $month;
     protected $year;
@@ -12,7 +11,7 @@ class Calendar {
     protected $previousYear;
     protected $nextMonth;
     protected $previousMonth;
-    protected $day_num;
+    protected $dayNum;
     protected $DB;
     protected $DBdata;
     protected $dbquery;
@@ -38,33 +37,38 @@ class Calendar {
 
 		$this->DBdata = $DBdata;
 
+		$this->daysInMonth = $this->getCurrentMonthDetails();
+
+		// $this->monthYearCounter();
+
+		//connect to DB for tooltip plugin
 		$this->DB = $DB;
 		$this->dbquery = new dbquery($this->DB, $table);
 
 	}
 
-	public function create(){
+	public function getCurrentMonthDetails(){
 		
 		//get's today's date
-		$date =time();
+		$date = time();
 		//This puts the day, month, and year in seperate variables
 		// $this->day = date('d', $date);  //not required
-		if($this->month == ''){
+		if(empty($this->month)){
 			$this->month = date('m', $date);
 			$this->year = date('Y', $date);
 		}
 		//Here we generate the first day of the month
-		$first_day = mktime(0,0,0,$this->month, 1, $this->year) ;
+		$firstDay = mktime(0,0,0,$this->month, 1, $this->year) ;
 
 		//This gets us the month name
-		$this->title = date('F', $first_day);
+		$this->title = date('F', $firstDay);
 		
 		//Here we find out what day of the week the first day of the month falls on 
-		$day_of_week = date('D', $first_day) ; 
+		$dayOfWeek = date('D', $firstDay) ; 
 
 		 //Once we know what day of the week it falls on, we know how many blank days occure before it. If the first day of the week is a Sunday then it would be zero
 
-		 switch($day_of_week){ 
+		 switch($dayOfWeek){ 
 			 case "Sun": $this->blank = 0; break; 
 			 case "Mon": $this->blank = 1; break; 
 			 case "Tue": $this->blank = 2; break; 
@@ -75,16 +79,26 @@ class Calendar {
  		}
 
 		 //We then determine how many days are in the current month
-		 $this->days_in_month = cal_days_in_month(0, $this->month, $this->year); 
+ 		 // return cal_days_in_month(0, $this->month, $this->year); //v.1
+
+ 		//v.2
+ 		$returnArray = array();
+ 		$returnArray['blank'] = $this->blank;
+ 		$returnArray['year'] = $this->year;
+ 		$returnArray['month'] = $this->month;
+ 		$returnArray['dbquery'] = $this->dbquery;
+ 		$returnArray['title'] = $this->title;
+ 		$returnArray['DBdata'] = $this->DBdata;
+ 		$returnArray['daysInMonth'] = cal_days_in_month(0, $this->month, $this->year); 
+		return $returnArray;
 
 	}
 
 	public function render(){
-		$this->monthYearCounter();
-
-		//This counts the days in the week, up to 7
-		$day_count = 1;
-		$this->day_num = 1;
+		
+		//This counts the days in the week
+		$dayCount = 1;
+		$this->dayNum = 1;
 
 		echo '<nav>
 		        <ul>
@@ -125,35 +139,35 @@ class Calendar {
 		while ( $this->blank > 0 ) { 
 			echo "<td class='calendar_blank_days'></td>"; 
 			$this->blank = $this->blank-1; 
-			$day_count++;
+			$dayCount++;
 		} 
 
         //count up the days, until we've done all of them in the month
-		while ( $this->day_num <= $this->days_in_month ){
+		while ( $this->dayNum <= $this->daysInMonth){
 
-			$this->parse($this->day_num, $this->DBdata);
-			// echo "<td> $this->day_num </td>"; 
-			$this->day_num++; 	
-			$day_count++;
+			$this->parse($this->dayNum, $this->DBdata);
+			// echo "<td> $this->dayNum </td>"; 
+			$this->dayNum++; 	
+			$dayCount++;
 
 		 //Make sure we start a new row every week
-	    	if ($day_count > 7){
+	    	if ($dayCount > 7){
 				echo "</tr><tr>";
-				$day_count = 1;
+				$dayCount = 1;
 			}
 
 		 } 
 
 		 //Finaly we finish out the table with some blank details if needed
-		while ( $day_count >1 && $day_count <=7 ){		 
+		while ( $dayCount >1 && $dayCount <=7 ){		 
 			 echo "<td class='calendar_blank_days'> </td>"; 
-		    $day_count++; 
+		    $dayCount++; 
 		} 
 
 		echo "</tr></table>"; 
 	}
 
-	private function monthYearCounter(){
+	public function monthYearCounter(){
 		$this->previousYear = false;
 		$this->nextYear = false;
 
@@ -167,16 +181,27 @@ class Calendar {
 			$this->nextMonth = 1;
 			$this->nextYear = true;
 		}
+
+		//v.2
+		$returnArrayCounter = array();
+		$returnArrayCounter['nextYear'] = $this->nextYear;
+		$returnArrayCounter['previousYear'] = $this->previousYear;
+		$returnArrayCounter['nextMonth'] = $this->nextMonth;
+		$returnArrayCounter['previousMonth'] = $this->previousMonth;
+		return $returnArrayCounter;
+
 	}
 
-	//checks if $day_num exists in uniqueDates of DBdata, if data exists then display all users associated with 
-	//the date ($day_num) by a color bar.
-	private function parse($day_num, $DBdata){
+	//checks if $dayNum exists in uniqueDates of DBdata, if data exists then display all users associated with 
+	//the date ($dayNum) by a color bar.
+	private function parse($dayNum, $DBdata){
+
 		$exists = false;
 		$users = array();
-		if (in_array($day_num, $DBdata['uniqueDates'])) {
+		if (in_array($dayNum, $DBdata['uniqueDates'])) {
+
 			foreach ($DBdata['info'] as $key => $userdate){
-				if($userdate['date'] == $day_num){
+				if($userdate['date'] == $dayNum){
 					// $users[] = $userdate['firstName'];
 					// $users[$userdate['firstName']]['color'] = $userdate['color'];
 					$users[] = array('name'=>$userdate['firstName'], 'color'=>$userdate['color']);
@@ -189,7 +214,7 @@ class Calendar {
 
 		if ($exists) {
 			//build date for tooltip query
-			$date = $this->year . '-' . $this->month . '-' . $day_num;
+			$date = $this->year . '-' . $this->month . '-' . $dayNum;
 
 			$tooltipInfo = $this->dbquery->tooltip($date);
 
@@ -201,7 +226,7 @@ class Calendar {
 			}
 
 			echo "<td class='calendarDayBox' title='" . "{$tooltipInfo['count_coming']} " . "can make it: " . "\n" . "$can_make". "\n" . "{$tooltipInfo['count_not_coming']} cannot make it: " . "\n" . "$cannot_make". "'>";
-			echo "<div class='calendarDayNumContainer'><div class='calendarDayNum'>$day_num";
+			echo "<div class='calendarDayNumContainer'><div class='calendarDayNum'>$dayNum";
 			echo "<div class='calendarDayInfo'>";
 			foreach ($users as $key) {
 				echo "<div title='" . $key['name'] . "' style='background-color:" . $key['color'] . "' class='dot'></div>";
@@ -210,7 +235,7 @@ class Calendar {
 			echo "</div></div>";
 			echo "</td>";
 		} else {
-			echo "<td class='calendarDayBox'><div class='calendarDayNumContainer'><div class='calendarDayNum'>$day_num</div></div></td>";
+			echo "<td class='calendarDayBox'><div class='calendarDayNumContainer'><div class='calendarDayNum'>$dayNum</div></div></td>";
 		}
 	}
 }

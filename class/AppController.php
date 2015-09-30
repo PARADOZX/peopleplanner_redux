@@ -22,9 +22,36 @@ class AppController
 	{
 		$DBquery = new dbquery($this->DB, $this->table);  
 		$tableName = $DBquery->getTableInfo();
-		$calender = new Calendar($DBquery->getAllDates(), $tableName, $this->DB); 
-		$calender->create();
-		$calender->render();
+
+		$data = array();
+		$calendar = new Calendar($DBquery->getAllDates(), $tableName, $this->DB); 
+
+
+		//v.2
+		$returnArray = $calendar->getCurrentMonthDetails();
+		$data['DBdata'] = $returnArray['DBdata'];
+		$data['daysInMonth'] = $returnArray['daysInMonth'];
+		$data['blank'] = $returnArray['blank'];
+		$data['year'] = $returnArray['year'];
+		$data['month'] = $returnArray['month'];
+		$data['title'] = $returnArray['title'];
+		$data['dbquery'] = $returnArray['dbquery'];
+		//v.2
+		$returnArrayCounter = $calendar->monthYearCounter();  
+		$data['nextYear'] = $returnArrayCounter['nextYear'];
+		$data['previousYear'] = $returnArrayCounter['previousYear'];
+		$data['nextMonth'] = $returnArrayCounter['nextMonth'];	
+		$data['previousMonth'] = $returnArrayCounter['previousMonth'];	
+
+		// $calendar->monthYearCounter();		//v.1
+
+		//v.2
+		$view = new View('calendar_view');
+    	$view->render($data);
+
+		//v.1
+		// $calender->create(); //redirected.  obsolete
+		// $calendar->render();
 	}
 
 	public function toggledate()
@@ -36,7 +63,10 @@ class AppController
 	public function getuserlist()
 	{
 		$usersquery = new Usersquery($this->DB, $this->table);
-		$usersquery->getUsers();
+		$usersArray = $usersquery->getUsers();
+
+		$view = new View('user_list_view');
+    	$view->render($usersArray);
 	}
 
 	public function createnewtrip()
