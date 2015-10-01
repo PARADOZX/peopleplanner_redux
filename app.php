@@ -2,7 +2,7 @@
 
 session_start();
 
-include 'includes/config.inc.php';
+include 'conf/config.inc.php';
 
 $ctrl = ucfirst($_REQUEST['ctrl']) . 'Controller';
 
