@@ -28,20 +28,31 @@ class AppController
 
 
 		//v.2
-		$returnArray = $calendar->getCurrentMonthDetails();
-		$data['DBdata'] = $returnArray['DBdata'];
-		$data['daysInMonth'] = $returnArray['daysInMonth'];
-		$data['blank'] = $returnArray['blank'];
-		$data['year'] = $returnArray['year'];
-		$data['month'] = $returnArray['month'];
-		$data['title'] = $returnArray['title'];
-		$data['dbquery'] = $returnArray['dbquery'];
+		$details = $calendar->getCurrentMonthDetails();
+		
+		foreach($details as $key=>$value) {
+			$data[$key] = $value;	
+		}
+
+		// $data['DBdata'] = $returnArray['DBdata'];
+		// $data['daysInMonth'] = $returnArray['daysInMonth'];
+		// $data['blank'] = $returnArray['blank'];
+		// $data['year'] = $returnArray['year'];
+		// $data['month'] = $returnArray['month'];
+		// $data['title'] = $returnArray['title'];
+		// $data['dbquery'] = $returnArray['dbquery'];
 		//v.2
-		$returnArrayCounter = $calendar->monthYearCounter();  
-		$data['nextYear'] = $returnArrayCounter['nextYear'];
-		$data['previousYear'] = $returnArrayCounter['previousYear'];
-		$data['nextMonth'] = $returnArrayCounter['nextMonth'];	
-		$data['previousMonth'] = $returnArrayCounter['previousMonth'];	
+		$counter = $calendar->monthYearCounter();  
+
+		foreach($counter as $key=>$value) {
+			$data[$key] = $value;
+		}
+
+		// $data['nextYear'] = $returnArrayCounter['nextYear'];
+		// $data['previousYear'] = $returnArrayCounter['previousYear'];
+		// $data['nextMonth'] = $returnArrayCounter['nextMonth'];	
+		// $data['previousMonth'] = $returnArrayCounter['previousMonth'];	
+
 
 		// $calendar->monthYearCounter();		//v.1
 
@@ -62,11 +73,11 @@ class AppController
 
 	public function getuserlist()
 	{
-		$usersquery = new Usersquery($this->DB, $this->table);
-		$usersArray = $usersquery->getUsers();
+		$DBquery = new dbquery($this->DB, $this->table);
+		$users = $DBquery->getUsers();
 
 		$view = new View('user_list_view');
-    	$view->render($usersArray);
+    	$view->render($users);
 	}
 
 	public function createnewtrip()

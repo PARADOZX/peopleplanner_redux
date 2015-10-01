@@ -16,18 +16,6 @@ class Calendar {
     protected $DBdata;
     protected $dbquery;
 
-	// function __construct($DBdata='', $table){
-	// 	$this->month = (isset($_GET['month']) && filter_var($_GET['month'], FILTER_VALIDATE_INT, array("options"=>
-	// 	array("min_range"=>1, "max_range"=>12)))) ? $_GET['month'] : '';
-
-	// 	$this->year = (isset($_GET['year']) && filter_var($_GET['month'], FILTER_VALIDATE_INT)) ? $_GET['year'] : '';
-
-	// 	$this->DBdata = $DBdata;
-
-	// 	//instantiate new dbquery for tooltip
-	// 	$dbconnection = new dbconnect();
-	// 	$this->dbquery = new dbquery($dbconnection->connect(), $table);
-	// }
 	function __construct($DBdata='', $table, $DB=''){
 		
 		$this->month = (isset($_GET['month']) && filter_var($_GET['month'], FILTER_VALIDATE_INT, array("options"=>
