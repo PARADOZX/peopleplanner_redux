@@ -7,7 +7,7 @@ class dbconnect {
 	public function connect(){
 		try {
 			$DB = new PDO('mysql:dbname=' . DB_DB . ';host=' . DB_HOST, DB_USER, DB_PASSWORD) or die('FAILED CONNECTION');
-			// $DB = new PDO('mysql:dbname=byjames1_schedule;host=localhost','byjames1_ling','********') or die('FAILED CONNECTION');
+			// $DB = new PDO('mysql:dbname=byjames1_schedule;host=localhost','byjames1_ling','S****1*v') or die('FAILED CONNECTION');
 			
 			$DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			return $DB; 
