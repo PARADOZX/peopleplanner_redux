@@ -59,6 +59,7 @@ class User_Auth {
                          $resultArr[$key] = $value;
                     }                 
                     echo json_encode($resultArr);
+                    
                } else {
                     throw new Exception('The email address and password entered do not match those on file.');
                }
