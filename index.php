@@ -367,7 +367,7 @@ function init(){
 		}));
 
 		//get the day
-		var day = parseInt(this.innerText);
+		var day = parseInt($(this).find('.calendarDayNum').text());
 		//cache some of these vars
 		var month = (document.getElementById('previousMonth').getAttribute('data-preMonth') != 12) ? parseInt(document.getElementById('previousMonth').getAttribute('data-preMonth')) + 1: 1;
 		var year = (document.getElementById('previousMonth').getAttribute('data-preMonth') != 12) ? parseInt(document.getElementById('previousMonth').getAttribute('data-preYear')) : parseInt(document.getElementById('previousMonth').getAttribute('data-preYear')) + 1;
