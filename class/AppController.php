@@ -25,7 +25,14 @@ class AppController
 
 		//returns false if user just registered and has not created or joined a single trip.  This will prompt
 		//the create/join page client-side
-		if(!$tableName) return false;
+
+		// if(!$tableName) return false;
+
+		if(!$tableName) { 
+			$view = new View('start_view');
+			$view->render(array());
+			return;
+		}
 
 		$data = array();
 		$calendar = new Calendar($DBquery->getAllDates(), $tableName, $this->DB); 

@@ -19,8 +19,8 @@
 			    <li id="nav_analytics_test" onclick="">Test</li>
 		    </ul>
 		</li>
-		<li id="nav_create" onclick="pages.renderpage('#user_list, #calendar', '#start_page', pages.createtrip())">Create New Trip</li>
-		<li id="nav_join" onclick="pages.renderpage('#user_list, #calendar', '#start_page', pages.jointrip())">Join An Existing Trip</li>
+		<li id="nav_create" onclick="pages.renderpage('#user_list, #calendar', '#calendar', pages.createtrip())">Create New Trip</li>
+		<li id="nav_join" onclick="pages.renderpage('#user_list, #calendar', '#calendar', pages.jointrip())">Join An Existing Trip</li>
 	</ul>
 </nav>
 
