@@ -6,8 +6,8 @@ var userObj = {
 
 var Authentication = {
 	logIn : function(){
-		var email = document.getElementById('log_in_email').value,
-			password = document.getElementById('log_in_pass').value;
+		var email = document.getElementById('log-in-email').value,
+			password = document.getElementById('log-in-pass').value;
 
 		$.ajax({
 			type: "POST",
@@ -33,20 +33,20 @@ var Authentication = {
 				action : 'logout'
 			}
 		}).done(function(data){
-			$('#user').empty();
+			$('#header-auth').empty();
 			$('#main').empty().html(data);
 		});
 	}, 
 	register : {
 		show : function (){
-			$('#sign_in').hide();
+			$('#sign-in').hide();
 			$('#register').show();
 		}, 
 		send : function(){
-			var first_name = document.getElementById('register_first_name').value,
-				password1 = document.getElementById('register_pass').value,
-				password2 = document.getElementById('register_pass2').value,
-				email = document.getElementById('register_email').value;
+			var first_name = document.getElementById('register-first-name').value,
+				password1 = document.getElementById('register-pass').value,
+				password2 = document.getElementById('register-pass2').value,
+				email = document.getElementById('register-email').value;
 
 			var msg = '';
 			if (first_name === '' || password1 === '' || password2 === '' || email === '') msg += 'Make sure all fields are completed.\n';
@@ -69,7 +69,7 @@ var Authentication = {
 				})
 				.done(function(data){
 					$('#register').hide();
-					$('#sign_in').show();
+					$('#sign-in').show();
 					$('#calendar').append(data);
 				});
 			}
@@ -112,10 +112,11 @@ var loggedIn = {
 			}                  
 		})
 		.done(function(data){
-			$('#sign_in').empty().html('<button onclick="Authentication.logOut()">log out</button>');
+			$('#sign-in').empty().html('<button onclick="Authentication.logOut()">log out</button>');
 
 			$('#calendar, #user_list').empty();
-			$('#calendar').append(data).hide().slideDown(750).show();
+			// $('#calendar').append(data).hide().slideDown(750).show();
+			$('#calendar').append(data);
 
 			if ($('#tableName').attr('data-tableName') !== undefined) {
 				userObj.table = $('#tableName').attr('data-tableName');

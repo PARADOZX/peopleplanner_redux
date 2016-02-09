@@ -48,7 +48,7 @@ class User_Auth {
 
                // if user found return user details in JSON
                if (password_verify($pass, $result['password'])) {
-               // if ($p == $result['password']) {     //bluehost
+               // if ($pass == $result['password']) {     //bluehost  1 of 3
 
                     //start session
                     session_start();

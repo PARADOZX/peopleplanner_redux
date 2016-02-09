@@ -1,11 +1,12 @@
-<div id="users_display"><b>Attendees</b><hr/>
-
+<div id="users_display">
+	<div id="users_header">ATTENDEES</div>
+	<div id="users_attendees_list">
 <?php
 
 foreach ($data as $key) {
-	echo '<br />' . "<div class='attendees'>" . $key['firstName'] . "<div title='" . $key['firstName'] . "' style='background-color:" . $key['color'] . "' class='attendees_dot'></div></div>";
+	echo "<div class='users_attendees'>" . "<span title='" . $key['firstName'] . "' style='background-color:" . $key['color'] . "' class='users_attendees_mark'></span>" . $key['firstName'] . "</div>";
 }
 
 ?>
-
+	</div>
 </div>

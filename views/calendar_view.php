@@ -14,11 +14,11 @@
 				?>
 				</select>
 		</li>
-		<li id="nav_analytics">Analytics<img src="img/down_arrow.png" />
+		<!-- <li id="nav_analytics">Analytics<img src="img/down_arrow.png" />
 		    <ul>
 			    <li id="nav_analytics_test" onclick="">Test</li>
 		    </ul>
-		</li>
+		</li> -->
 		<li id="nav_create" onclick="pages.renderpage('#user_list, #calendar', '#calendar', pages.createtrip())">Create New Trip</li>
 		<li id="nav_join" onclick="pages.renderpage('#user_list, #calendar', '#calendar', pages.jointrip())">Join An Existing Trip</li>
 	</ul>
@@ -31,13 +31,13 @@
 
 <br/><br/><br/>
 <!--Here we start building the table heads -->
-<table id="calendar_view">
-	<caption> <?php echo strtoupper($data['DBdata']['tripInfo'][0]['tripName']); ?></caption>
+<table id="calendar-view">
+	<caption><?php echo strtoupper($data['DBdata']['tripInfo'][0]['tripName']); ?></caption>
 	<tr>
 		<th colspan=7>
-			<span id='previousMonth' data-preMonth='<?php echo $data['previousMonth']; ?>' data-preYear='<?php echo (($data['previousYear']) ? $data['year'] - 1 : $data['year']); ?>' style='font-size:10pt; float: left' class='scrollNextMonth'>Previous Month</span>
+			<span id='previousMonth' data-preMonth='<?php echo $data['previousMonth']; ?>' data-preYear='<?php echo (($data['previousYear']) ? $data['year'] - 1 : $data['year']); ?>' style='font-size:10pt; float: left' class='scroll-next-month'>Previous Month</span>
 			<span id='calendarTitle'><?php echo $data['title'] . ' ' . $data['year'] ?></span>
-			<span id='nextMonth' data-nextMonth='<?php echo $data['nextMonth']; ?>' data-nextYear='<?php echo (($data['nextYear']) ? $data['year'] + 1 : $data['year']); ?>' style='font-size:10pt; float: right' class='scrollNextMonth'>Next Month</span>
+			<span id='nextMonth' data-nextMonth='<?php echo $data['nextMonth']; ?>' data-nextYear='<?php echo (($data['nextYear']) ? $data['year'] + 1 : $data['year']); ?>' style='font-size:10pt; float: right' class='scroll-next-month'>Next Month</span>
 		</th>
 	</tr>
 	<tr class='tableDaysHeader'>

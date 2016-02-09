@@ -18,12 +18,12 @@ class AuthController
 
 	public function login()
 	{
-		$user_auth = new User_Auth($this->DB, $_POST['email'], $_POST['password']);
+		$user_auth = new User_auth($this->DB, $_POST['email'], $_POST['password']);
 		$user_auth->loginUser();
 	}
 
 	public function logout()
 	{
-		User_Auth::logOut();
+		User_auth::logOut();
 	}
 }

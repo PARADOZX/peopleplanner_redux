@@ -2,8 +2,19 @@
 		margin : 0;
 		padding : 0;
 	}
-	
+	.attendees {
+		border: 1px solid #b8b2b8;
+		background-color: white;
+		box-shadow: 0 1px 1px #b8b2b8;
+		-webkit-box-shadow: 0 1px 1px #b8b2b8;
+		-moz-box-shadow: 0 1px 1px #b8b2b8;
+	}
+	.attendees_dot {
+		width: 100%;
+		height:2px;
+	}
 	body {
+		/*background: url(images/bg.jpg) top center no-repeat #545454;*/
 		font-family: 'Arial', sans-serif;
 	}
 	button {
@@ -37,23 +48,18 @@
 		margin-top: 5px;
 		text-shadow:1px 1px 0px #ffffff;
 	}
-	#main {
-		width: 960px;
-		margin: 0 auto;
-	}
 	#main-container {
-		width: 100%;	
-		min-width: 960px;
+		width : 960px;
+		margin: 0px auto;
 	}
 	header {
 		border-bottom: 1px solid black;
 		box-shadow: inset 0 -1px #cfcaca;
-		width: 100%;
 	}
 	header>#header-auth {
-		width: 500px;
-		margin: 0 auto;
-		text-align: center;
+		display: inline-block;
+		margin-left: 400px;
+		padding : 8px;
 	}
 	header>#header-title {
 		font-size: 72px;
@@ -63,15 +69,22 @@
 		vertical-align: middle;
 	}
 	nav {
+		/*width : 800px;*/
+		/*float: right;*/
 	}
 	nav ul{
-		width: 100%;
-		margin: 0 auto;
 		list-style: none;
 		position: relative;
-		font-size: 12px;
-		border-bottom: 2px;
-		cursor: pointer;
+		display: inline-block;
+		float: right;
+
+		background-color: #ededed;
+		border:1px solid #b8b2b8;
+		box-shadow: 0 1px 1px #b8b2b8;
+		-webkit-box-shadow: 0 1px 1px #b8b2b8;
+		-moz-box-shadow: 0 1px 1px #b8b2b8;
+		padding: 4px;
+		font-size: 10pt;
 	}
 	
 	nav ul ul {
@@ -82,8 +95,8 @@
 		top: 85%;
 	}
 	nav ul li {
-		display: inline-block;
-		width: 33%;
+		float: left;
+		width: 197px;
 		text-align: center;
 	}
 	nav ul ul li {
@@ -91,6 +104,10 @@
 		border-bottom: 1px solid #575f6a;
 		position: relative;
 	}
+
+
+
+
 	nav ul li:hover > ul {
 		display: block;
 	}
@@ -105,6 +122,10 @@
 		width : 700px;
 		height : auto;
 		border-spacing: 5px;
+	}
+	table caption {
+		font-size: 16pt;
+		border-bottom: 1px solid #b8b2b8; 
 	}
 	/*th, td {
 		border: 1px solid black;
@@ -143,11 +164,6 @@
 		background-color: #FFFCCF;
 	}
 	#calendar {
-		display: inline-block;
-		width: 760px;
-	}
-	#calendar-view>caption {
-		font-size: 40px;
 	}
 	#calendarTitle {
 		font-size : 16pt;
@@ -206,15 +222,13 @@
 		-moz-box-shadow: 2px 2px 4px #888;
 		box-shadow: 2px 2px 4px #888;
 	}
-	.scroll-next-month {
-		cursor: pointer;
-	}
 
 	td {
 		width : 100px;
 		height : 70px;
 	}
 	#tooltip {
+	    /*background: #fff url(../images/search.png) no-repeat 5px 50%;*/
 	    background-color: white;
 	    border: 1px solid #BFBFBF;
 	    float: left;
@@ -229,30 +243,17 @@
 	
 	
 	#user_list {
-		display: inline-block;
-		font-size: 12px;
-		width: 200px;
+		font-size: 12pt;
+		float : left;
+		width : 100px;
 	}
 	#users_display {
+		float: left;
 		width: 100%;
-	}
-	#users_display>#users_header {
-		font-size: 16px;
-		margin-top: 10px;
-	}
-	#users_display>#users_attendees_list {
-		margin-top: 30px;
-	}
-	#users_display .users_attendees {
-		background-color: white;
-		margin-bottom: 5px;
-		font-size: 12px;
-	}
-	#users_display .users_attendees_mark {
-		display: inline-block;
-		width: 100%;
-		height: 10px;
-		width: 10px;
-		border-radius: 4px;
-		margin-right: 4px;
+		padding: 10px;
+		background-color: #ededed;
+		border:1px solid #b8b2b8;
+		box-shadow: 0 1px 1px #b8b2b8;
+		-webkit-box-shadow: 0 1px 1px #b8b2b8;
+		-moz-box-shadow: 0 1px 1px #b8b2b8;
 	}

@@ -2,6 +2,8 @@
 
 $exists = false;
 $users = array();
+$can_make = '';
+$cannot_make = '';
 
 if (in_array($dayNum, $data['DBdata']['uniqueDates'])) {
 // var_dump($data['DBdata']['info'][0]['date']);
